@@ -5,3 +5,9 @@ Application-flow graphing for simflux. Kind of messy right now with no instructi
 But here's what it looks like...
 
 ![screenshot](http://i.imgur.com/GD3kadG.png?1)
+
+
+cred
+====
+
+- This project borrowed a lot from `devtools-extension` project

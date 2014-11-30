@@ -1,56 +1,45 @@
-//if (window.simflux) {
+function insertScript(src) {
+  var script = document.createElement("script");
+  script.type = "text/javascript";
+  script.src = src;
+  //document.body.insertBefore(script, document.body.firstChild);
+  document.body.appendChild(script);
+}
 
-  function insertScript(src) {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src = src;
-    //document.body.insertBefore(script, document.body.firstChild);
-    document.body.appendChild(script);
-  }
+insertScript("simflux-viz-bundle.js");
 
-  insertScript("simflux-viz-bundle.js");
+var graphContEl,
+    pollFreq = 1000,
+    prevGraphCount = 0;
 
-  function sendObjectToDevTools(message) {
-    // The callback here can be used to execute something on receipt
-    chrome.extension.sendMessage(message, function(message) {
-    });
-  }
+function pollGraph() {
+  var count = ~~graphContEl.dataset.updateCount;
+  if (count !== prevGraphCount) {
+    // graph count changed
 
-  sendObjectToDevTools({content: 'hiiiiii world'});
+    var idx = ~~ graphContEl.dataset.startIndex,
+        el,
+        data = {
+          startIdx: idx,
+          count: 0
+        };
 
-  var graphContEl,
-      pollFreq = 1000,
-      prevGraphCount = 0;
-
-  function pollGraph() {
-    var count = ~~graphContEl.dataset.updateCount;
-    if (count !== prevGraphCount) {
-      // graph count changed
-
-      var idx = ~~ graphContEl.dataset.startIndex,
-          el,
-          data = {
-            startIdx: idx,
-            count: 0
-          };
-
-      while (el = document.getElementById('simflux-history-'+idx)) {
-        data[idx] = JSON.parse(el.innerText);
-        data.count++;
-        idx++;
-      }
-
-      sendObjectToDevTools(data);
-      prevGraphCount = count;
+    while (el = document.getElementById('simflux-history-'+idx)) {
+      data[idx] = JSON.parse(el.innerText);
+      data.count++;
+      idx++;
     }
-    setTimeout(pollGraph, pollFreq);
-  }
 
-  function findGraphEl() {
-    graphContEl = document.getElementById("simflux-history-container");
-    if (!graphContEl) return setTimeout(findGraphEl, pollFreq);
-    pollGraph();
+    chrome.extension.sendMessage(data);
+    prevGraphCount = count;
   }
+  setTimeout(pollGraph, pollFreq);
+}
 
-  findGraphEl();
-//}
+function findGraphEl() {
+  graphContEl = document.getElementById("simflux-history-container");
+  if (!graphContEl) return setTimeout(findGraphEl, pollFreq);
+  pollGraph();
+}
+
+findGraphEl();

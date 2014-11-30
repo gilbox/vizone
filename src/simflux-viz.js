@@ -5,10 +5,6 @@ var zone = window.zone || (typeof zone !== 'undefined' ? zone : require('zone.js
 
 var simfluxVizGraphs = require('./simflux-viz-graphs');
 
-//var dagred3 = require('dagre-d3');
-//console.log("-->dagred3: ", dagred3);
-
-
 var simfluxViz = function () {
 
   simflux.history = [];

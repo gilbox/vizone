@@ -4,29 +4,15 @@
 // chrome.devtools.*
 // chrome.extension.*
 
-
-
-//function sendObjectToInspectedPage(message) {
-//  console.log("send it!");
-//  message.tabId = chrome.devtools.inspectedWindow.tabId;
-//  chrome.extension.sendMessage(message);
-//}
 (function createChannel() {
-  //Create a port with background page for continous message communication
+  //Create a port with background page for continuous message communication
   var port = chrome.extension.connect({
-    name: "Sample Communication" //Given a Name
+    name: "simflux connection"
   });
 
   // Listen to messages from the background page
   port.onMessage.addListener(function(message) {
-    //if (message.content) {
-    //  document.querySelector('#insertmessagebutton').innerHTML = message.content;
-    //} else {
-    //document.querySelector('#data').innerText = JSON.stringify(message);
-    console.log("-->message: ", message);
-    if ('startIdx' in message) graphit(message[message.startIdx]);
-    //}
-    // port.postMessage(message);
+    if ('startIdx' in message) renderGraph(message[message.startIdx + message.count - 1]);
   });
 
 }());
@@ -42,6 +28,7 @@ function fstr(str) {
   });
 }
 
+// templates for generating graph node html
 var strTransform = {
   view: ['<b>{0}</b>', 'view'],
   preAction: ['{0}.<b>{1}</b>', 'acName', 'preAction'],
@@ -62,7 +49,7 @@ _.forEach(strTransform,function (meta, type) {
 var svg = d3.select("svg"),
   inner = svg.append("g");
 
-function graphit(data) {
+function renderGraph(data) {
   var g = new dagreD3.graphlib.Graph().setGraph({});
 
   data.nodes.forEach(function(node) {
@@ -73,12 +60,10 @@ function graphit(data) {
     value.labelType = 'html';
     value.rx = value.ry = 5;
 
-    console.log("node-->name, value.label: ", name, value.label);
     g.setNode(name, value);
   });
 
   data.arrows.forEach(function (arrow) {
-    console.log("arrow-->arrow.a, arrow.b: ", arrow.a, arrow.b);
     g.setEdge(arrow.a, arrow.b, {label:''});
   });
 
@@ -108,8 +93,7 @@ function graphit(data) {
   // Center the graph
   var initialScale = 0.75,
       svgEl = svg[0][0],
-      w = svgEl.clientWidth,
-      h = svgEl.clientHeight;
+      w = svgEl.clientWidth;
 
   zoom
     .translate([(w - g.graph().width * initialScale) / 2, 20])
@@ -120,40 +104,7 @@ function graphit(data) {
 
 // This sends an object to the background page
 // where it can be relayed to the inspected page
-function sendObjectToInspectedPage(message) {
-  message.tabId = chrome.devtools.inspectedWindow.tabId;
-  chrome.extension.sendMessage(message);
-}
-
-console.log("HELLO");
-
-angular.module('sfvDev', [])
-
-  .directive('sfvMain', function() {
-    return {
-      restrict: 'E',
-      scope: {},
-      templateUrl: 'panel-main.html',
-      controller: function($scope) {
-        $scope.executeScript = function() {
-          console.log('oooo');
-          //sendObjectToInspectedPage({action: "code", content: "console.log('Inline script executed')"});
-          //sendObjectToInspectedPage({action: "script", content: "vendor/zone.js"});
-          sendObjectToInspectedPage({action: "script", content: "bridge.js"});
-        }
-      }
-    }
-  });
-
-//document.querySelector('#executescript').addEventListener('click', function() {
-//    sendObjectToInspectedPage({action: "code", content: "console.log('Inline script executed')"});
-//}, false);
-//
-//document.querySelector('#insertscript').addEventListener('click', function() {
-//    sendObjectToInspectedPage({action: "script", content: "inserted-script.js"});
-//}, false);
-//
-//document.querySelector('#insertmessagebutton').addEventListener('click', function() {
-//    sendObjectToInspectedPage({action: "code", content: "document.body.innerHTML='<button>Send message to DevTools</button>'"});
-//    sendObjectToInspectedPage({action: "script", content: "messageback-script.js"});
-//}, false);
+//function sendObjectToInspectedPage(message) {
+//  message.tabId = chrome.devtools.inspectedWindow.tabId;
+//  chrome.extension.sendMessage(message);
+//}

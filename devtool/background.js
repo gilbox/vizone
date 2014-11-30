@@ -5,10 +5,7 @@
 // chrome.tabs.*
 // chrome.extension.*
 
-console.log("ZZZ22224242ZZZZ");
-
 chrome.extension.onConnect.addListener(function (port) {
-  console.log("BBBBB");
 
     chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
       if (changeInfo.status === 'complete') {

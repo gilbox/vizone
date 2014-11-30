@@ -1,0 +1,16 @@
+<div class="all cf">
+
+  <div>
+    <div ng-style="{ width: pct() }" class="statusBar"></div>
+  </div>
+
+  <div class="img-cont">
+    <div ng-if="!store.myFace" ng-repeat="photo in store.photos">
+      <a class="img" ng-click="clickPhoto(photo)">
+        <img ng-src="{{photo.photo.image_url | jpg}}" alt="">
+      </a>
+    </div>
+  </div>
+
+
+</div>

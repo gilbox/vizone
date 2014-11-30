@@ -1,0 +1,34 @@
+{
+  "name": "simflux-viz",
+  "version": "0.0.2",
+  "description": "Application-flow graphing for simflux",
+  "main": "simflux-viz.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gilbox/simflux.git"
+  },
+  "keywords": [
+    "flux"
+  ],
+  "author": "Gil Birman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gilbox/simflux/issues"
+  },
+  "homepage": "https://github.com/gilbox/simflux",
+  "dependencies": {
+    "browserify": "^6.3.3",
+    "d3": "^3.4.13",
+    "dagre-d3": "^0.3.2",
+    "flux": "^2.0.1",
+    "gulp": "^3.8.10",
+    "gulp-concat": "^2.4.2",
+    "gulp-load-plugins": "^0.7.1",
+    "lodash": "^2.4.1",
+    "vinyl-source-stream": "^1.0.0",
+    "zone.js": "git+https://git@github.com/angular/zone.js.git"
+  }
+}

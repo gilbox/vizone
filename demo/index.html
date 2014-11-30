@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+  <meta charset="utf-8" />
+  <title>AngularJS Plunker</title>
+  <script data-require="lodash.js@*" data-semver="2.4.1" src="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
+  <script>document.write('<base href="' + document.location + '" />');</script>
+  <link rel="stylesheet" href="style.css" />
+  <!--<script src="//rawgit.com/angular/zone.js/master/zone.js"></script>-->
+
+  <script src="Flux.js"></script>
+  <script src="../node_modules/simflux/simflux.js"></script>
+
+  <script src="//rawgit.com/caolan/async/master/lib/async.js"></script>
+  <script src="//rawgit.com/500px/500px-js-sdk/master/500px.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-route.js"></script>
+  <script src="//rawgit.com/gsklee/ngStorage/master/ngStorage.js"></script>
+  <script src="app.js"></script>
+  <script src="app-routes.js"></script>
+  <script src="app-ctrls.js"></script>
+</head>
+
+<body ng-controller="MainCtrl">
+
+  <div ng-view></div>
+
+  <div class="credit">Images graciously provided by <a href="http://500px.com">500px</a> and <a href="http://alltheragefaces.com/">alltheragefaces</a></div>
+</body>
+
+</html>

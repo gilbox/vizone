@@ -1,0 +1,18 @@
+{
+    "name": "DevToolsPanel",
+    "version": "0.1",
+    "description": "A bare-bones example of communication between devtools and an inspected page",
+    "devtools_page": "devtools.html",
+    "background": {
+        "scripts": [
+            "background.js"
+        ]
+    },
+    "permissions": [
+        "webNavigation",
+        "tabs", 
+        "http://*/*",
+        "https://*/*"
+    ],
+    "manifest_version": 2
+}

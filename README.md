@@ -18,9 +18,9 @@ install
 
 
 - Manually [Load unpacked extension](chrome://extensions/) for `devtool/` dir in chrome.
-- Make sure that the web page you wish to use with `simflux-viz` hosts the `simflux-viz-bundle.js` file.
-  Optionally, you can directly include `simflux-viz-bundle.js` in your project which will ensure that
-  all actions (including actions dispatched during application startup) are recorded.
+- Optionally, you can directly include `simflux-viz-bundle.js` in your project which will ensure that
+  all actions (including actions dispatched during application startup) are recorded. If you don't
+  include `simflux-viz-bundle.js` it will be loaded on-the-fly directly from *rawgit*.
 - Open your page which uses simflux
 - Open devtools and click `simflux` tab
 - Refresh the page, and you should see `simflux-viz loaded` in the console in orange

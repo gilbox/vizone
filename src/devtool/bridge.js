@@ -6,7 +6,7 @@ function insertScript(src) {
   document.body.appendChild(script);
 }
 
-insertScript("simflux-viz-bundle.js");
+insertScript("https://rawgit.com/gilbox/simflux-viz/master/dist/simflux-viz-bundle.js");
 
 var graphContEl,
     pollFreq = 1000,

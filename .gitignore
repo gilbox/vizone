@@ -1,6 +1,5 @@
-dist/
 node_modules/
-simflux-viz-bundle.js
+demo/simflux-viz-bundle.js
 tmp/
 devtool/bridge.js
 devtool/panel.js

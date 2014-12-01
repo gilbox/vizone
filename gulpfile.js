@@ -47,22 +47,6 @@ gulp.task('build-devtool', [
   'devtool-panel'
 ]);
 
-//gulp.task('build-devtool', [], function () {
-//  return browserify('./src/devtool/bridge.js')
-//    .external('simflux')
-//    .external('zone.js')
-//    .external('zone')
-//    .bundle()
-//    .pipe(source('bridge.js'))
-//    .pipe(gulp.dest('./devtool'))
-//});
-
-//gulp.task('jsx', function () {
-//  return gulp.src('./src/**/*.jsx')
-//    .pipe($.react())
-//    .pipe(gulp.dest('./src'));
-//});
-
 gulp.task('watch', ['default'], function() {
   gulp.watch('./**/*', ['build', 'build-devtool']);
 });

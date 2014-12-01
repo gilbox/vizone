@@ -109,6 +109,23 @@ var simfluxViz = function () {
     }
   }
 
+  // when simflux-viz is loaded, immediately patch any existing
+  // dispatchers, stores, and action creators
+  simflux.dispatchers.forEach(function (dispatcher) {
+    patchDispatcher(dispatcher);
+
+    // monkey patch stores
+    dispatcher.stores.forEach(function (store) {
+      patchStore(dispatcher, store);
+    });
+
+    // monkey patch action creators
+    dispatcher.actionCreators.forEach(function (ac) {
+      patchActionCreator(dispatcher, ac);
+    });
+
+  });
+
   var odispatch = simflux.Dispatcher.prototype.dispatch;
   simflux.Dispatcher.prototype.dispatch = function(action) {
     this.dispatchedActions.push(action);
@@ -139,23 +156,6 @@ var simfluxViz = function () {
     patchDispatcher(d);
     return d;
   };
-
-  // when simflux-viz is loaded, immediately patch any existing
-  // dispatchers, stores, and action creators
-  simflux.dispatchers.forEach(function (dispatcher) {
-    patchDispatcher(dispatcher);
-
-    // monkey patch stores
-    dispatcher.stores.forEach(function (store) {
-      patchStore(dispatcher, store);
-    });
-
-    // monkey patch action creators
-    dispatcher.actionCreators.forEach(function (ac) {
-      patchActionCreator(dispatcher, ac);
-    });
-
-  });
 
   console.log("%csimflux-viz loaded", "color:white; background-color:orange; font-size: 14pt; border-radius:8px; padding: 0 10px; font-family:Verdana;");
 };

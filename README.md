@@ -17,7 +17,7 @@ install
           gulp
 
 
-- Manually [Load unpacked extension](chrome://extensions/) for `devtool/` dir in chrome.
+- Manually *Load unpacked extension* (chrome://extensions/) using this repo's `devtool/` dir in chrome.
 - Optionally, you can directly include `simflux-viz-bundle.js` in your project which will ensure that
   all actions (including actions dispatched during application startup) are recorded. If you don't
   include `simflux-viz-bundle.js` it will be loaded on-the-fly directly from *rawgit*.

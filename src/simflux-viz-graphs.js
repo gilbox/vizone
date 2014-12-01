@@ -60,8 +60,14 @@ simflux.generateHistoryGraphJSON = function (idx) {
     storeIdx = 0,
     graph = new SimfluxGraph();
 
-  graph.addNode('V', { type: 'view', view: historyObj.view, viewLocation: historyObj.viewLocation });
-  graph.addNode('PA', { type: 'preAction', acName:acName, preAction:historyObj.preAction });
+  graph.addNode('V', { type: 'view', view: historyObj.view, location: historyObj.viewLocation });
+  graph.addNode('PA', {
+    type: 'preAction',
+    acName:acName,
+    preAction:historyObj.preAction,
+    fnName: historyObj.actionCreator.$$$stackInfo.fnName,
+    location: historyObj.actionCreator.$$$stackInfo.location
+  });
   graph.addArrow('V','PA');
 
   historyObj.actionHistory.forEach(function (action, i) {
@@ -74,7 +80,13 @@ simflux.generateHistoryGraphJSON = function (idx) {
         var storeName = store.storeName || '[store]';
         var storeNodeName = 'S'+storeIdx;
         storeIdx++;
-        graph.addNode(storeNodeName, { type: 'store', store: storeName, action: action });
+        graph.addNode(storeNodeName, {
+          type: 'store',
+          store: storeName,
+          action: action,
+          fnName: store.$$$stackInfo.fnName,
+          location: store.$$$stackInfo.location
+        });
         graph.addArrow(actionNodeName, storeNodeName);
       });
     }

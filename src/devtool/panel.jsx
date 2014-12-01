@@ -4,6 +4,11 @@
 // chrome.devtools.*
 // chrome.extension.*
 
+//var React = require('react');
+var ChartNode = require('../components/ChartNode.jsx');
+
+//React.render(<ChartNode />, document.getElementById('chart-node'));
+
 (function createChannel() {
   //Create a port with background page for continuous message communication
   var port = chrome.extension.connect({
@@ -31,9 +36,13 @@ function fstr(str) {
 // templates for generating graph node html
 var strTransform = {
   view: ['<b>{0}</b>', 'view'],
+  viewSimple: ['{0}', 'view'],
   preAction: ['{0}.<b>{1}</b>', 'acName', 'preAction'],
+  preActionSimple: ['{0}', 'acName'],
   action: ['{0}', 'action'],
-  store: ['{0}.{1}', 'store', 'action']
+  actionSimple: ['{0}', 'action'],
+  store: ['{0}.{1}', 'store', 'action'],
+  storeSimple: ['{0}', 'store']
 };
 _.forEach(strTransform,function (meta, type) {
   strTransform[type] = function(o) {
@@ -57,8 +66,11 @@ function renderGraph(data) {
         value = {};
 
     value.label = strTransform[node.type](node);
+    value.simpleName = strTransform[node.type+'Simple'](node);
     value.labelType = 'html';
+    value.location = node.location;
     value.rx = value.ry = 5;
+    value.id = "some-id";
 
     g.setNode(name, value);
   });
@@ -86,9 +98,17 @@ function renderGraph(data) {
   // Run the renderer. This is what draws the final graph.
   render(inner, g);
 
-  //inner.selectAll("g.node")
-  //  .attr("title", function(v) { return styleTooltip(v, g.node(v).description) })
-  //  .each(function(v) { $(this).tipsy({ gravity: "w", opacity: 1, html: true }); });
+  inner.selectAll("g.node")
+    .attr("data-clickable", function(v) { return g.node(v).location ? 'true' : 'false' })
+    .each(function(v) {
+      this.addEventListener('click', function () {
+        var url = g.node(v).location;
+        if (url) {
+          var consoleMsg = url + '  <-- ' + g.node(v).simpleName;
+          sendObjectToInspectedPage({action: "code", content: "console.log('%c"+consoleMsg+"', 'border: 1px solid orange; border-radius: 5px; padding: 5px; line-height:22px;')"});
+        }
+      })
+    });
 
   // Center the graph
   var initialScale = 0.75,
@@ -104,7 +124,7 @@ function renderGraph(data) {
 
 // This sends an object to the background page
 // where it can be relayed to the inspected page
-//function sendObjectToInspectedPage(message) {
-//  message.tabId = chrome.devtools.inspectedWindow.tabId;
-//  chrome.extension.sendMessage(message);
-//}
+function sendObjectToInspectedPage(message) {
+  message.tabId = chrome.devtools.inspectedWindow.tabId;
+  chrome.extension.sendMessage(message);
+}

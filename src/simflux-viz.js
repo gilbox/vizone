@@ -29,6 +29,7 @@ var simfluxViz = function () {
   }
 
   function patchStore(dispatcher, store) {
+    store.$$$stackInfo = parseStackLine2(store.$$$stack);
     for (var a in store) {
       if (store.hasOwnProperty(a) && typeof store[a] === 'function') {
         (function(a, fn) {
@@ -44,19 +45,20 @@ var simfluxViz = function () {
     }
   }
 
-  function parseView(stack) {
+  function parseStackLine2(stack) {
 
     var viewInfo = stack.match(/\n.+\n\s+at\s+(.+)\n/);
     viewInfo = viewInfo.length>1 ? viewInfo[1] : '[view]';
     viewInfo = viewInfo.match(/^(.+)\((.+)\)$/);
 
     return {
-      view: viewInfo.length>1 ? viewInfo[1].trim() : '[view]',
-      viewLocation: viewInfo.length>2 ? viewInfo[2] : ''
+      fnName: viewInfo.length>1 ? viewInfo[1].trim() : '[view]',
+      location: viewInfo.length>2 ? viewInfo[2] : ''
     };
   }
 
   function patchActionCreator(dispatcher, ac) {
+    ac.$$$stackInfo = parseStackLine2(ac.$$$stack);
     for (var a in ac) {
       if (ac.hasOwnProperty(a) && typeof ac[a] === 'function') {
         (function(pa, fn) {
@@ -64,7 +66,7 @@ var simfluxViz = function () {
 
             var stack = new Error().stack;
             //console.log("-->stack: ", stack);
-            var viewInfo = parseView(stack);
+            var viewInfo = parseStackLine2(stack);
 
             var historyObj = {
               index: simflux.history.length,
@@ -73,8 +75,8 @@ var simfluxViz = function () {
               preActionFn: fn,
               actionCreator: ac,
               actionHistory: [],
-              view: viewInfo.view,
-              viewLocation: viewInfo.viewLocation,
+              view: viewInfo.fnName,
+              viewLocation: viewInfo.location,
               executedStoreActions: {},
               date: new Date()
             };

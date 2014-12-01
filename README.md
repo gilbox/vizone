@@ -13,8 +13,8 @@ install
 - build:
 
 
-      npm install
-      gulp
+          npm install
+          gulp
 
 
 - Manually [Load unpacked extension](chrome://extensions/) for `devtool/` dir in chrome.

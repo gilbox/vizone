@@ -8,7 +8,7 @@ app.filter('jpg', function() {
 
 app.constant('dispatcher', simflux.instantiateDispatcher());
 
-app.factory('appStore', function (dispatcher) {
+app.factory('appStore', function appStore(dispatcher) {
   var goodTags = ['happy','sad','angry','confused','glasses','troll','cute','child','creepy','stoned','stupid','alone','girl','man','scared','cry','lol','crazy','fuck','celebrity','smile','japanese','cool','clean','sexy'];
   return dispatcher.registerStore({
     storeName: 'appStore',
@@ -112,7 +112,7 @@ app.factory('appStore', function (dispatcher) {
 
 // use angular event broadcasting to separate the route store from
 // the routing "view" components (see app-routes.js)
-app.factory('routeStore', function ($rootScope, dispatcher, appStore) {
+app.factory('routeStore', function routeStore($rootScope, dispatcher, appStore) {
   return dispatcher.registerStore({
     storeName: 'routeStore',
     selectPhoto: function () {

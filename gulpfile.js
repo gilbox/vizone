@@ -1,7 +1,8 @@
 var gulp            = require('gulp'),
     browserify      = require('browserify'),
     source          = require('vinyl-source-stream'),
-    $               = require('gulp-load-plugins')();
+    $               = require('gulp-load-plugins')(),
+    reactify = require('reactify');
 
 gulp.task('build1', [], function () {
 
@@ -24,15 +25,43 @@ gulp.task('build', ['build1'], function () {
     .pipe(gulp.dest('./demo'));
 });
 
-gulp.task('build-devtool', ['build1'], function () {
-  return browserify('./src/devtool/bridge.js')
-    .external('simflux')
-    .external('zone.js')
-    .external('zone')
-    .bundle()
-    .pipe(source('bridge.js'))
-    .pipe(gulp.dest('./devtool'))
-});
+function browserifyDevtool(file) {
+  var outFile = file.replace('.jsx', '.js');
+  return function () {
+    return browserify()
+      .transform(reactify)
+      .add('./src/devtool/'+file)
+      .external('simflux')
+      .external('zone.js')
+      .external('zone')
+      .bundle()
+      .pipe(source(outFile))
+      .pipe(gulp.dest('./devtool'))
+  }
+}
+
+gulp.task('devtool-bridge', browserifyDevtool('bridge.js'));
+gulp.task('devtool-panel', browserifyDevtool('panel.jsx'));
+gulp.task('build-devtool', [
+  'devtool-bridge',
+  'devtool-panel'
+]);
+
+//gulp.task('build-devtool', [], function () {
+//  return browserify('./src/devtool/bridge.js')
+//    .external('simflux')
+//    .external('zone.js')
+//    .external('zone')
+//    .bundle()
+//    .pipe(source('bridge.js'))
+//    .pipe(gulp.dest('./devtool'))
+//});
+
+//gulp.task('jsx', function () {
+//  return gulp.src('./src/**/*.jsx')
+//    .pipe($.react())
+//    .pipe(gulp.dest('./src'));
+//});
 
 gulp.task('watch', ['default'], function() {
   gulp.watch('./**/*', ['build', 'build-devtool']);

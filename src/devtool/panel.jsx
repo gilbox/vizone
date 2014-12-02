@@ -39,9 +39,9 @@ var strTransform = {
   viewSimple: ['{0}', 'view'],
   preAction: ['{0}.<b>{1}</b>', 'acName', 'preAction'],
   preActionSimple: ['{0}', 'acName'],
-  action: ['{0}<pre class="NodeAction-code">{1}</pre>', 'action', 'args' ],
+  action: ['<h3 class="NodeAction-action">{0}</h3><pre class="NodeAction-code">{1}</pre>', 'action', 'args' ],
   actionSimple: ['{0}', 'action'],
-  store: ['{0}.{1}', 'store', 'action'],
+  store: ['<h3 class="NodeStore-store">{0}</h3><small class="NodeStore-action">{1}</small>', 'store', 'action'],
   storeSimple: ['{0}', 'store']
 };
 _.forEach(strTransform,function (meta, type) {
@@ -71,6 +71,7 @@ function renderGraph(data) {
     value.location = node.location;
     value.rx = value.ry = 5;
     value.id = "some-id";
+    value.class = "Node";
 
     g.setNode(name, value);
   });

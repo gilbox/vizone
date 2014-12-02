@@ -5,7 +5,7 @@ Application-flow graphing for simflux.
 Still in early stages of development, but fully functional.
 Here's what it looks like...
 
-![screenshot](http://i.imgur.com/GD3kadG.png?1)
+![screenshot](http://i.imgur.com/YtDsEcL.png)
 
 install
 =======

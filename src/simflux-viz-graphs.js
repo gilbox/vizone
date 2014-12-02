@@ -27,18 +27,16 @@ simflux.generateHistoryGraph = function (idx) {
   r += fstr("PA [labelType=\"html\" label=\"{0}.<b>{1}</b>\" style=\"fill: #0a0; font-weight: bold\"];\n", acName, historyObj.preAction);
   r += "V->PA\n";
 
-  historyObj.actionHistory.forEach(function (a, i) {
-    r += fstr("A{0} [label=\"{1}\" style=\"fill: #f77; font-weight: bold\"];\n", i, a);
+  historyObj.actionHistory.forEach(function (actionHistoryObj, i) {
+    r += fstr("A{0} [label=\"{1}\" style=\"fill: #f77; font-weight: bold\"];\n", i, actionHistoryObj.action);
     r += fstr("PA->A{0};\n", i);
 
-    if (historyObj.executedStoreActions[a]) {
-      historyObj.executedStoreActions[a].forEach(function (store) {
-        var storeName = store.storeName || '[store]';
-        storeIdx++;
-        r += fstr("S{0} [label=\"{1}.{2}\" style=\"fill: #aa8; font-weight: bold\"];\n", storeIdx, storeName, a);
-        r += fstr("A{0}->S{1};\n", i, storeIdx);
-      });
-    }
+    actionHistoryObj.stores.forEach(function (store) {
+      var storeName = store.storeName || '[store]';
+      storeIdx++;
+      r += fstr("S{0} [label=\"{1}.{2}\" style=\"fill: #aa8; font-weight: bold\"];\n", storeIdx, storeName, actionHistoryObj.action);
+      r += fstr("A{0}->S{1};\n", i, storeIdx);
+    });
   });
 
   r += "}\n";
@@ -70,26 +68,24 @@ simflux.generateHistoryGraphJSON = function (idx) {
   });
   graph.addArrow('V','PA');
 
-  historyObj.actionHistory.forEach(function (action, i) {
+  historyObj.actionHistory.forEach(function (actionHistoryObj, i) {
     var actionNodeName = 'A'+i;
-    graph.addNode(actionNodeName, { type: 'action', action: action });
+    graph.addNode(actionNodeName, { type: 'action', action: actionHistoryObj.action });
     graph.addArrow('PA', actionNodeName);
 
-    if (historyObj.executedStoreActions[action]) {
-      historyObj.executedStoreActions[action].forEach(function (store) {
-        var storeName = store.storeName || '[store]';
-        var storeNodeName = 'S'+storeIdx;
-        storeIdx++;
-        graph.addNode(storeNodeName, {
-          type: 'store',
-          store: storeName,
-          action: action,
-          fnName: store.$$$stackInfo.fnName,
-          location: store.$$$stackInfo.location
-        });
-        graph.addArrow(actionNodeName, storeNodeName);
+    actionHistoryObj.stores.forEach(function (store) {
+      var storeName = store.storeName || '[store]';
+      var storeNodeName = 'S'+storeIdx;
+      storeIdx++;
+      graph.addNode(storeNodeName, {
+        type: 'store',
+        store: storeName,
+        action: actionHistoryObj.action,
+        fnName: store.$$$stackInfo.fnName,
+        location: store.$$$stackInfo.location
       });
-    }
+      graph.addArrow(actionNodeName, storeNodeName);
+    });
   });
 
   return JSON.stringify(graph.toObject());

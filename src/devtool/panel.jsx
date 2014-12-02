@@ -105,7 +105,7 @@ function renderGraph(data) {
         var url = g.node(v).location;
         if (url) {
           var consoleMsg = url + '  <-- ' + g.node(v).simpleName;
-          sendObjectToInspectedPage({action: "code", content: "console.log('%c"+consoleMsg+"', 'border: 1px solid orange; border-radius: 5px; padding: 5px; line-height:25px;')"});
+          sendObjectToInspectedPage({action: "code", content: "console.log('%c"+consoleMsg+"', 'border: 1px solid orange; background: orange; color:white; border-radius: 5px; padding: 5px; line-height:25px;')"});
         }
       })
     });

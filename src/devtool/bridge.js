@@ -6,6 +6,7 @@ function insertScript(src) {
   document.body.appendChild(script);
 }
 
+//insertScript("http://0.0.0.0:3101/demo/simflux-viz-bundle.js");
 insertScript("https://rawgit.com/gilbox/simflux-viz/master/dist/simflux-viz-bundle.js");
 
 var graphContEl,

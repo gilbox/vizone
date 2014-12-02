@@ -21,10 +21,14 @@ var simfluxViz = function () {
     }
   }
 
+  function updateHistoryGraph(historyObj) {
+    simfluxVizGraphs.updateHistoryGraph(historyObj.index, simfluxVizGraphs.generateHistoryGraphJSON);
+  }
+
   function patchDispatcher(dispatcher) {
-    dispatcher.dispatchedActions = [];
+    //dispatcher.dispatchedActions = [];
     dispatcher.actionHash = {};
-    dispatcher.executedStoreActions = {};
+    //dispatcher.executedStoreActions = {};
     dispatcher.history = [];
   }
 
@@ -35,8 +39,18 @@ var simfluxViz = function () {
         (function(a, fn) {
           store[a] = function() {
             if (dispatcher.actionHash[a]) {
-              dispatcher.executedStoreActions[a] = dispatcher.executedStoreActions[a] || [];
-              dispatcher.executedStoreActions[a].push(store);
+              //dispatcher.executedStoreActions[a] = dispatcher.executedStoreActions[a] || [];
+              //dispatcher.executedStoreActions[a].push(store);
+              var historyObj = zone.historyObj;
+
+              if (historyObj) {
+                //historyObj.executedStoreActions[a] = historyObj.executedStoreActions[a] || [];
+                //historyObj.executedStoreActions[a].push(store);
+                historyObj.actionHistory[historyObj.actionHistory.length-1].stores.push(store);
+                updateHistoryGraph(historyObj);
+              } else {
+                console.error("simflux-viz: store action handler invoked outside of viz zone");
+              }
             }
             return fn.apply(this, Array.prototype.slice.call(arguments, 0));
           };
@@ -77,7 +91,7 @@ var simfluxViz = function () {
               actionHistory: [],
               view: viewInfo.fnName,
               viewLocation: viewInfo.location,
-              executedStoreActions: {},
+              //executedStoreActions: {},
               date: new Date()
             };
 
@@ -91,14 +105,15 @@ var simfluxViz = function () {
             zone.index = 'root';
             zone.fork({
               afterTask: function () {
-                // @todo: will this be incorrect for two sync pre-actions?
-                historyObj.actionHistory = historyObj.actionHistory.concat(dispatcher.dispatchedActions);
-                dispatcher.dispatchedActions = [];
-                extendExecutedActions(historyObj.executedStoreActions, dispatcher.executedStoreActions);
-                dispatcher.executedStoreActions = {};
-                simfluxVizGraphs.updateHistoryGraph(historyObj.index, simfluxVizGraphs.generateHistoryGraphJSON);
+                // @todo: do we still need this?
+                //historyObj.actionHistory = historyObj.actionHistory.concat(dispatcher.dispatchedActions);
+                //dispatcher.dispatchedActions = [];
+                //extendExecutedActions(historyObj.executedStoreActions, dispatcher.executedStoreActions);
+                //dispatcher.executedStoreActions = {};
+                updateHistoryGraph(historyObj);
               }
             }).run(function () {
+              zone.historyObj = historyObj;
               zone.index = historyObj.index;
               r = fn.apply(thisObj, args); // this runs synchronously so r is always returned below
             });
@@ -128,10 +143,21 @@ var simfluxViz = function () {
 
   var odispatch = simflux.Dispatcher.prototype.dispatch;
   simflux.Dispatcher.prototype.dispatch = function(action) {
-    this.dispatchedActions.push(action);
+    //this.dispatchedActions.push(action);
     this.actionHash[action] = 1;
 
-    setTimeout(function () {},0); // catch stray actions
+    if (zone.historyObj) {
+      var actionHistoryObj = {
+        action: action,
+        stores: []
+      };
+      zone.historyObj.actionHistory.push(actionHistoryObj);
+      updateHistoryGraph(zone.historyObj);
+    } else {
+      console.error("simflux-viz: dispatched outside of viz zone");
+    }
+
+    //setTimeout(function () {},0); // catch stray actions
 
     return odispatch.apply(this, Array.prototype.slice.call(arguments, 0));
   };

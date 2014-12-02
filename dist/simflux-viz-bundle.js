@@ -770,12 +770,15 @@ var simfluxViz = function () {
   var odispatch = simflux.Dispatcher.prototype.dispatch;
   simflux.Dispatcher.prototype.dispatch = function(action) {
     //this.dispatchedActions.push(action);
+    var args = Array.prototype.slice.call(arguments, 0);
+
     this.actionHash[action] = 1;
 
     if (zone.historyObj) {
       var actionHistoryObj = {
         action: action,
-        stores: []
+        stores: [],
+        args: args.slice(1)
       };
       zone.historyObj.actionHistory.push(actionHistoryObj);
       updateHistoryGraph(zone.historyObj);
@@ -785,7 +788,7 @@ var simfluxViz = function () {
 
     //setTimeout(function () {},0); // catch stray actions
 
-    return odispatch.apply(this, Array.prototype.slice.call(arguments, 0));
+    return odispatch.apply(this, args);
   };
 
   var oregisterActionCreator = simflux.Dispatcher.prototype.registerActionCreator;
@@ -916,7 +919,16 @@ simflux.generateHistoryGraphJSON = function (idx) {
 
   historyObj.actionHistory.forEach(function (actionHistoryObj, i) {
     var actionNodeName = 'A'+i;
-    graph.addNode(actionNodeName, { type: 'action', action: actionHistoryObj.action });
+    var args = actionHistoryObj.args
+                .filter(function(v){return typeof v === 'string'})
+                .map(function (v) { return v.substr(0,50) })
+                .join("\n");
+
+    graph.addNode(actionNodeName, {
+      type: 'action',
+      action: actionHistoryObj.action,
+      args: args
+    });
     graph.addArrow('PA', actionNodeName);
 
     actionHistoryObj.stores.forEach(function (store) {

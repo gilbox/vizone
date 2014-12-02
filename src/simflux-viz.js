@@ -144,12 +144,15 @@ var simfluxViz = function () {
   var odispatch = simflux.Dispatcher.prototype.dispatch;
   simflux.Dispatcher.prototype.dispatch = function(action) {
     //this.dispatchedActions.push(action);
+    var args = Array.prototype.slice.call(arguments, 0);
+
     this.actionHash[action] = 1;
 
     if (zone.historyObj) {
       var actionHistoryObj = {
         action: action,
-        stores: []
+        stores: [],
+        args: args.slice(1)
       };
       zone.historyObj.actionHistory.push(actionHistoryObj);
       updateHistoryGraph(zone.historyObj);
@@ -159,7 +162,7 @@ var simfluxViz = function () {
 
     //setTimeout(function () {},0); // catch stray actions
 
-    return odispatch.apply(this, Array.prototype.slice.call(arguments, 0));
+    return odispatch.apply(this, args);
   };
 
   var oregisterActionCreator = simflux.Dispatcher.prototype.registerActionCreator;

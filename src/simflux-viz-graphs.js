@@ -70,7 +70,16 @@ simflux.generateHistoryGraphJSON = function (idx) {
 
   historyObj.actionHistory.forEach(function (actionHistoryObj, i) {
     var actionNodeName = 'A'+i;
-    graph.addNode(actionNodeName, { type: 'action', action: actionHistoryObj.action });
+    var args = actionHistoryObj.args
+                .filter(function(v){return typeof v === 'string'})
+                .map(function (v) { return v.substr(0,50) })
+                .join("\n");
+
+    graph.addNode(actionNodeName, {
+      type: 'action',
+      action: actionHistoryObj.action,
+      args: args
+    });
     graph.addArrow('PA', actionNodeName);
 
     actionHistoryObj.stores.forEach(function (store) {

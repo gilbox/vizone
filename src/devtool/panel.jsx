@@ -39,7 +39,7 @@ var strTransform = {
   viewSimple: ['{0}', 'view'],
   preAction: ['{0}.<b>{1}</b>', 'acName', 'preAction'],
   preActionSimple: ['{0}', 'acName'],
-  action: ['{0}', 'action'],
+  action: ['{0}<pre class="NodeAction-code">{1}</pre>', 'action', 'args' ],
   actionSimple: ['{0}', 'action'],
   store: ['{0}.{1}', 'store', 'action'],
   storeSimple: ['{0}', 'store']

@@ -76,7 +76,7 @@ function renderGraph(data) {
   });
 
   data.arrows.forEach(function (arrow) {
-    g.setEdge(arrow.a, arrow.b, {label:''});
+    g.setEdge(arrow.a, arrow.b, {label:'', lineInterpolate:'basis'});
   });
 
   // Create the renderer

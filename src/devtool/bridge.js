@@ -1,13 +1,25 @@
-function insertScript(src) {
+function insertScriptLoader(src) {
   var script = document.createElement("script");
   script.type = "text/javascript";
-  script.src = src;
-  //document.body.insertBefore(script, document.body.firstChild);
+  script.id = 'simflux-viz-script';
+  script.innerText =
+      "if (window.simflux || (typeof require === 'function' && require.isDefined && require.isDefined('simflux'))) {" +
+        "var s = document.createElement('script');" +
+        "s.type = 'text/javascript';" +
+        "s.src = '"+src+"';" +
+        "document.body.appendChild(s);" +
+      "} else {" +
+        "var s = document.getElementById('simflux-viz-script'); s.id = 'simflux-not-present'; s.innerText='';" +
+      "}";
   document.body.appendChild(script);
 }
 
-//insertScript("http://0.0.0.0:3101/demo/simflux-viz-bundle.js");
-insertScript("https://rawgit.com/gilbox/simflux-viz/master/dist/simflux-viz-bundle.js");
+var simfluxNotPresent = !! document.getElementById('simflux-not-present');
+
+//insertScriptLoader("http://0.0.0.0:3101/demo/simflux-viz-bundle.js");
+if (! document.getElementById('simflux-viz-script') && ! simfluxNotPresent) {
+  insertScriptLoader("https://rawgit.com/gilbox/simflux-viz/master/dist/simflux-viz-bundle.js");
+}
 
 var graphContEl,
     pollFreq = 1000,
@@ -38,9 +50,11 @@ function pollGraph() {
 }
 
 function findGraphEl() {
-  graphContEl = document.getElementById("simflux-history-container");
-  if (!graphContEl) return setTimeout(findGraphEl, pollFreq);
-  pollGraph();
+  if ( ! document.getElementById('simflux-not-present') ) {
+    graphContEl = document.getElementById("simflux-history-container");
+    if (!graphContEl) return setTimeout(findGraphEl, pollFreq);
+    pollGraph();
+  }
 }
 
-findGraphEl();
+if (! simfluxNotPresent) findGraphEl();

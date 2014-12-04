@@ -26,6 +26,39 @@ install
 - Refresh the page, and you should see `simflux-viz loaded` in the console in orange
 - Now every time an action occurs in the application, you will see a flow chart generated in real time.
 
+usage
+=====
+
+usage: setup
+-----
+
+Normally when using `simflux`, some registration functions are optional. However, `simflux-viz`
+will only be able to analyse your application if you use the registration functions listed below.
+
+- `dispatcher = simflux.instantiateDispatcher('App Dispatcher')`: Instantiate a dispatcher
+  (This will call `new simflux.Dispatcher()` for you)
+- `dispatcher.registerStore({...})`: Register a store.
+- `dispatcher.registerActionCreator({...}`; Register an Action Creator.
+
+usage: from the console
+----------------
+
+Number of charts:
+
+    simflux.history.length
+
+Generate a link to a chart:
+
+    simflux.generateLastHistoryGraphURL()   # most recent chart
+    simflux.generateHistoryGraphURL(idx)    # chart by index
+
+usage: chrome extension
+-----------------------
+
+When viewing a graph in the chrome extension, some nodes will be clickable. Clicking on a clickable
+node will log a source-code link in the console which, when clicked, will take you to the code
+related to that node.
+
 why?
 ====
 

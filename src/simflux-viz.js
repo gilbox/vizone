@@ -12,6 +12,16 @@ var simfluxViz = function () {
   // make sure simflux is attached to window since by default it doesn't have to be
   window.simflux = simflux;
 
+  function warn() {
+    var args = [
+      '%c' + arguments[0],
+      'color:darkorange'
+    ].concat(Array.prototype.slice.call(arguments, 1));
+
+    // use console.error to get a proper stack trace
+    console.error.apply(console, args);
+  }
+
   function extendExecutedActions(a,b) {
     for (var p in b) {
       if (a[p])
@@ -49,7 +59,7 @@ var simfluxViz = function () {
                 historyObj.actionHistory[historyObj.actionHistory.length-1].stores.push(store);
                 updateHistoryGraph(historyObj);
               } else {
-                console.error("simflux-viz: store action handler invoked outside of viz zone");
+                warn("simflux-viz: store action handler invoked outside of viz zone");
               }
             }
             return fn.apply(this, Array.prototype.slice.call(arguments, 0));
@@ -157,7 +167,7 @@ var simfluxViz = function () {
       zone.historyObj.actionHistory.push(actionHistoryObj);
       updateHistoryGraph(zone.historyObj);
     } else {
-      console.error("simflux-viz: dispatched outside of viz zone");
+      warn("simflux-viz: dispatched outside of viz zone");
     }
 
     //setTimeout(function () {},0); // catch stray actions

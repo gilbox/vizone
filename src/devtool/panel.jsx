@@ -5,7 +5,9 @@
 // chrome.extension.*
 
 //var React = require('react');
-var ChartNode = require('../components/ChartNode.jsx');
+//var ChartNode = require('../components/ChartNode.jsx');
+var tabId = chrome.devtools.inspectedWindow.tabId,
+    clickEventListeners = [];
 
 //React.render(<ChartNode />, document.getElementById('chart-node'));
 
@@ -17,8 +19,13 @@ var ChartNode = require('../components/ChartNode.jsx');
 
   // Listen to messages from the background page
   port.onMessage.addListener(function(message) {
-    if ('startIdx' in message) renderGraph(message[message.startIdx + message.count - 1]);
+    if (message.tabId === tabId) {
+      if ('startIdx' in message) renderGraph(message[message.startIdx + message.count - 1]);
+    }
   });
+
+  // Send init message
+  sendObjectToInspectedPage({action: 'init'});
 
 }());
 
@@ -99,16 +106,23 @@ function renderGraph(data) {
   // Run the renderer. This is what draws the final graph.
   render(inner, g);
 
+  clickEventListeners.forEach(function (obj) {
+    obj.o.removeEventListener('click', obj.f);
+  });
+  clickEventListeners = [];
+
   inner.selectAll("g.node")
     .attr("data-clickable", function(v) { return g.node(v).location ? 'true' : 'false' })
     .each(function(v) {
-      this.addEventListener('click', function () {
+      var clickListener = function () {
         var url = g.node(v).location;
         if (url) {
           var consoleMsg = url + '  <-- ' + g.node(v).simpleName;
           sendObjectToInspectedPage({action: "code", content: "console.log('%c"+consoleMsg+"', 'border: 1px solid orange; background: orange; color:white; border-radius: 5px; padding: 5px; line-height:25px;')"});
         }
-      })
+      };
+      this.addEventListener('click', clickListener);
+      clickEventListeners.push({o: this, f: clickListener});
     });
 
   // Center the graph

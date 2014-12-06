@@ -1,3 +1,7 @@
+var graphContEl,
+    pollFreq = 1000,
+    prevGraphCount = 0;
+
 function insertScriptLoader(src) {
   var script = document.createElement("script");
   script.type = "text/javascript";
@@ -16,14 +20,10 @@ function insertScriptLoader(src) {
 
 var simfluxNotPresent = !! document.getElementById('simflux-not-present');
 
-//insertScriptLoader("http://0.0.0.0:3101/demo/simflux-viz-bundle.js");
 if (! document.getElementById('simflux-viz-script') && ! simfluxNotPresent) {
+//insertScriptLoader("http://0.0.0.0:3101/demo/simflux-viz-bundle.js");
   insertScriptLoader("https://rawgit.com/gilbox/simflux-viz/master/dist/simflux-viz-bundle.js");
 }
-
-var graphContEl,
-    pollFreq = 1000,
-    prevGraphCount = 0;
 
 function pollGraph() {
   var count = ~~graphContEl.dataset.updateCount;
@@ -42,6 +42,8 @@ function pollGraph() {
       data.count++;
       idx++;
     }
+
+    data.tabId = window.simfluxTabId;
 
     chrome.extension.sendMessage(data);
     prevGraphCount = count;

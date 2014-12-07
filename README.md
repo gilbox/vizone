@@ -10,6 +10,19 @@ Here's what it looks like...
 install
 =======
 
+- Go here: **[simflux visualization devtool in the Chrome Web Store](https://chrome.google.com/webstore/detail/simflux-visualization-dev/idfhbgmlikkpjkkfaeajolmofdkaoinb)**
+- Open your page which uses simflux
+- Open devtools and click `simflux` tab
+- Refresh the page, and you should see `simflux-viz loaded` in the console in orange
+- Now every time an action occurs in the application, you will see a flow chart generated in real time.
+
+developing
+=======
+
+If you just want to install the chrome extension, see the [install section](#install).
+Otherwise, to work with the latest version from the repo, follow these steps:
+
+- clone this repo
 - build:
 
 

@@ -14,5 +14,10 @@
     "http://*/*",
     "https://*/*"
   ],
-  "manifest_version": 3
+  "manifest_version": 3,
+  "icons": {
+    "16": "simflux-16.png",
+    "48": "simflux-48.png",
+    "128": "simflux-128.png"
+  }
 }

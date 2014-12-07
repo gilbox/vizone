@@ -1,6 +1,7 @@
 {
-  "name": "simflux",
-  "version": "0.0.0.1",
+  "name": "simflux visualization devtool",
+  "short_name": "simflux",
+  "version": "0.0.0.2",
   "description": "simflux application flow charting",
   "devtools_page": "devtools.html",
   "background": {
@@ -14,7 +15,7 @@
     "http://*/*",
     "https://*/*"
   ],
-  "manifest_version": 3,
+  "manifest_version": 2,
   "icons": {
     "16": "simflux-16.png",
     "48": "simflux-48.png",

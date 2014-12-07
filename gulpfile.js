@@ -47,6 +47,20 @@ gulp.task('build-devtool', [
   'devtool-panel'
 ]);
 
+gulp.task('zip', ['build', 'build-devtool'], function() {
+  var manifest = require('./devtool/manifest'),
+    distFileName = manifest.name + ' v' + manifest.version + '.zip',
+    mapFileName = manifest.name + ' v' + manifest.version + '-maps.zip';
+  //collect all source maps
+  //gulp.src('build/scripts/**/*.map')
+  //  .pipe($.zip(mapFileName))
+  //  .pipe(gulp.dest('dist'));
+  //build distributable extension
+  return gulp.src(['devtool/**', '!devtool/**/*.map'])
+    .pipe($.zip(distFileName))
+    .pipe(gulp.dest('dist'));
+});
+
 gulp.task('watch', ['default'], function() {
   gulp.watch('./**/*', ['build', 'build-devtool']);
 });

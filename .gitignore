@@ -6,3 +6,4 @@ devtool/panel.js
 .DS_Store
 src/components/*.js
 npm-debug.log
+dist/*.zip

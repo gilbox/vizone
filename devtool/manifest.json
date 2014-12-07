@@ -1,6 +1,6 @@
 {
   "name": "simflux",
-  "version": "0.1",
+  "version": "0.0.0.1",
   "description": "simflux application flow charting",
   "devtools_page": "devtools.html",
   "background": {

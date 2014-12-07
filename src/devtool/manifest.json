@@ -6,7 +6,7 @@
   "devtools_page": "devtools.html",
   "background": {
     "scripts": [
-      "background.js"
+      "js/background.js"
     ]
   },
   "permissions": [

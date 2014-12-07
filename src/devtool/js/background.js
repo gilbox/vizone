@@ -19,7 +19,7 @@ chrome.extension.onConnect.addListener(function(port) {
     // @todo: there must be a better way to determine the tabId from bridge.js ?!
     chrome.tabs.executeScript(details.tabId, {code: "window.simfluxTabId="+details.tabId+";"});
 
-    chrome.tabs.executeScript(details.tabId, {file: "bridge.js"});
+    chrome.tabs.executeScript(details.tabId, {file: "js/bridge.js"});
   });
 
   var extensionListener = function(message, sender, sendResponse) {

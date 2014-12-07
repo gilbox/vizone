@@ -26,29 +26,44 @@ gulp.task('build', ['build1'], function () {
 });
 
 function browserifyDevtool(file) {
-  var outFile = file.replace('.jsx', '.js');
+  var outFile = file.replace('.jsx', '.js').replace('./src/devtool/js/', './devtool/js/');
   return function () {
     return browserify()
       .transform(reactify)
-      .add('./src/devtool/'+file)
+      .add(file)
       .external('simflux')
       .external('zone.js')
       .external('zone')
       .bundle()
       .pipe(source(outFile))
-      .pipe(gulp.dest('./devtool'))
+      .pipe(gulp.dest('./'))
   }
 }
 
-gulp.task('devtool-bridge', browserifyDevtool('bridge.js'));
-gulp.task('devtool-panel', browserifyDevtool('panel.jsx'));
-gulp.task('build-devtool', [
-  'devtool-bridge',
-  'devtool-panel'
-]);
+var devtoolFilesToCompile = [
+      './src/devtool/js/panel.jsx',
+      './src/devtool/js/bridge.js'
+    ],
+    devtoolFilesDontCopy = devtoolFilesToCompile.map(function (f) {
+      return '!'+f;
+    }),
+    devtoolCompileTasks = [];
+
+gulp.task('devtool-copy', function () {
+  gulp.src(['./src/devtool/**/*'].concat(devtoolFilesDontCopy))
+    .pipe(gulp.dest('./devtool'));
+});
+
+devtoolCompileTasks = devtoolFilesToCompile.map(function (file,i) {
+  var taskName = 'devtool-compile'+i;
+  gulp.task(taskName, browserifyDevtool(file));
+  return taskName;
+});
+
+gulp.task('build-devtool', ['devtool-copy'].concat(devtoolCompileTasks));
 
 gulp.task('zip', ['build', 'build-devtool'], function() {
-  var manifest = require('./devtool/manifest'),
+  var manifest = require('./src/devtool/manifest'),
     distFileName = manifest.name + ' v' + manifest.version + '.zip',
     mapFileName = manifest.name + ' v' + manifest.version + '-maps.zip';
   //collect all source maps

@@ -7,3 +7,4 @@ devtool/panel.js
 src/components/*.js
 npm-debug.log
 dist/*.zip
+devtool/**/*

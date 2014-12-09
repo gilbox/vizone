@@ -1,12 +1,12 @@
 var React = require('react');
 
-var ChartNode = React.createClass({
+var Timeline = React.createClass({
   render: function(){
     return (
       <div>
-        NOOOOOODDDDE
+
       </div>
     );
   }
 });
-module.exports = ChartNode;
+module.exports = Timeline;

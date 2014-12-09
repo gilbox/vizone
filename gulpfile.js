@@ -31,7 +31,7 @@ function browserifyDevtool(file) {
     return browserify()
       .transform(reactify)
       .add(file)
-      .external('simflux')
+      //.external('simflux')
       .external('zone.js')
       .external('zone')
       .bundle()

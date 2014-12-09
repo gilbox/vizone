@@ -3,7 +3,7 @@ var Chart = require('../lib/Chart');
 
 var FlowChart = React.createClass({
   shouldComponentUpdate: function (nextProps, nextState) {
-    this.chart.renderChart(nextProps.graph);
+    this.chart.renderChart(nextProps.chart);
     return false;
   },
   componentDidMount: function () {

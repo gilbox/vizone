@@ -69,3 +69,42 @@ text {
 div:hover > .NodeStore-action {
   color: black;
 }
+
+.Timeline {
+  top: 10px;
+  left: 25px;
+  position: absolute;
+  z-index: 1;
+}
+
+.Timeline-dot {
+  display: inline-block;
+  position: relative;
+  width: 15px;
+  height: 15px;
+  margin: 2px;
+  border-radius: 50%;
+  background: black;
+  cursor: pointer;
+}
+
+.Timeline-dot:hover {
+  background: blueviolet;
+}
+
+.Timeline-hint {
+  position: absolute;
+  top: 150%;
+  left: 50%;
+  transform: translateX(-50%);
+
+}
+
+.Timeline-hintTab {
+  display: inline-block;
+  background: blueviolet;
+  color: white;
+  padding: 3px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+}

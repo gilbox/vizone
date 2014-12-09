@@ -959,7 +959,7 @@ simflux.generateHistoryGraphJSON = function (idx) {
   return JSON.stringify(graph.toObject());
 };
 
-var contEl, historyMax = 5, updateCount = 0;
+var contEl, historyMax = 10, updateCount = 0;
 
 simflux.initHistoryGraph = function () {
   if (!contEl) {

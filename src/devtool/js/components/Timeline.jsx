@@ -4,10 +4,12 @@ var React = require('react'),
 var Timeline = React.createClass({
   getInitialState: function() {
     return {
-      hint: undefined
+      hint: undefined,
+      selectedIndex: 0
     }
   },
   clickDot: function (i, chart) {
+    this.state.selectedIndex = i;
     flux.actionCreator.clickTimelineDot({index: i, chart: chart});
   },
   hoverDot: function (i) {
@@ -19,8 +21,11 @@ var Timeline = React.createClass({
         lastIdx = message.startIdx+message.count;
 
     for (var i = message.startIdx; i < lastIdx; i++) {
+      var classes = 'Timeline-dot';
+      if (i === this.props.selectedIndex) classes += ' is-selected';
+
       dots.push(<a
-        className="Timeline-dot"
+        className={classes}
         key={i}
         onMouseEnter={this.hoverDot.bind(this, i)}
         onMouseLeave={this.hoverDot.bind(this, -1)}

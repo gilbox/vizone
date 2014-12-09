@@ -92,6 +92,11 @@ div:hover > .NodeStore-action {
   background: blueviolet;
 }
 
+.Timeline-dot.is-selected {
+  background: orange;
+  box-shadow: 0 0 1px 1px black;
+}
+
 .Timeline-hint {
   position: absolute;
   top: 150%;

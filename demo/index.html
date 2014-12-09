@@ -9,6 +9,14 @@
   <link rel="stylesheet" href="style.css" />
   <!--<script src="//rawgit.com/angular/zone.js/master/zone.js"></script>-->
 
+</head>
+
+<body ng-controller="MainCtrl">
+
+  <div ng-view></div>
+
+  <div class="credit">Images graciously provided by <a href="http://500px.com">500px</a> and <a href="http://alltheragefaces.com/">alltheragefaces</a></div>
+
   <script src="Flux.js"></script>
   <script src="../node_modules/simflux/simflux.js"></script>
 
@@ -20,13 +28,7 @@
   <script src="app.js"></script>
   <script src="app-routes.js"></script>
   <script src="app-ctrls.js"></script>
-</head>
-
-<body ng-controller="MainCtrl">
-
-  <div ng-view></div>
-
-  <div class="credit">Images graciously provided by <a href="http://500px.com">500px</a> and <a href="http://alltheragefaces.com/">alltheragefaces</a></div>
+  <script src="simflux-viz-bundle.js"></script>
 </body>
 
 </html>

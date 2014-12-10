@@ -30,7 +30,7 @@ var Panel = React.createClass({
             _this.setState({message: message, selectedIndex:lastIdx, chart:message[lastIdx]});
           } else {
             // remain at current chart
-            _this.setState({message: message});
+            _this.setState({message: message, chart:message[_this.state.selectedIndex]});
           }
         }
       }

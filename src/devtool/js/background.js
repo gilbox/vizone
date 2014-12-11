@@ -16,10 +16,12 @@ chrome.extension.onConnect.addListener(function(port) {
   //});
 
   chrome.webNavigation.onCompleted.addListener(function(details) {
-    // @todo: there must be a better way to determine the tabId from bridge.js ?!
-    chrome.tabs.executeScript(details.tabId, {code: "window.simfluxTabId="+details.tabId+";"});
+    if (! details.url.match(/^chrome:|about:/)) {
+      // @todo: there must be a better way to determine the tabId from bridge.js ?!
+      chrome.tabs.executeScript(details.tabId, {code: "window.simfluxTabId="+details.tabId+";"});
 
-    chrome.tabs.executeScript(details.tabId, {file: "js/bridge.js"});
+      chrome.tabs.executeScript(details.tabId, {file: "js/bridge.js"});
+    }
   });
 
   var extensionListener = function(message, sender, sendResponse) {

@@ -84,7 +84,13 @@ By combining **zone.js** with the predictability of Flux architecture we can eas
 application flow. `simflux-viz` uses **zone.js** and monkey patches the `simflux` library
 in order to record application flow in real-time.
 
+The simflux-viz chrome developer tools panel is itself a [simflux](https://github.com/gilbox/simflux)
+application, which uses [React](https://github.com/facebook/react) and [D3](http://d3js.org/) with
+[dagreD3](https://github.com/cpettitt/dagre-d3)
+to render the view. [Morearty](https://github.com/moreartyjs/moreartyjs)
+with [immutable.js](https://github.com/facebook/immutable-js) is used for data binding.
+
 cred
 ====
 
-- This project borrowed a lot from `devtools-extension` project
+- This project borrowed a lot from [`devtools-extension`](https://github.com/thingsinjars/devtools-extension) project

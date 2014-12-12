@@ -6,9 +6,11 @@
 
 var React = require('react');
 var Panel = require('./components/Panel.jsx');
+var flux = require('./lib/flux');
 
-var panel = <Panel />;
+// Morearty will pass root binding to Panel
+var BootstrapPanel = flux.ctx.bootstrap(Panel);
 
-React.render(panel, document.getElementById('panel'));
+React.render(<BootstrapPanel />, document.getElementById('panel'));
 
-window.panel = panel;
+window.panel = panel;  // just for console playing

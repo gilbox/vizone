@@ -29,7 +29,7 @@ function browserifyDevtool(file) {
   var outFile = file.replace('.jsx', '.js').replace('./src/devtool/js/', './devtool/js/');
   return function () {
     return browserify()
-      .transform(reactify)
+      .transform(reactify, { harmony: true })
       .add(file)
       //.external('simflux')
       .external('zone.js')

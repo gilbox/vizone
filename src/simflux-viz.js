@@ -22,23 +22,12 @@ var simfluxViz = function () {
     console.error.apply(console, args);
   }
 
-  function extendExecutedActions(a,b) {
-    for (var p in b) {
-      if (a[p])
-        a.concat(b[p]);
-      else
-        a[p] = b[p];
-    }
-  }
-
   function updateHistoryGraph(historyObj) {
     simfluxVizGraphs.updateHistoryGraph(historyObj.index, simfluxVizGraphs.generateHistoryGraphJSON);
   }
 
   function patchDispatcher(dispatcher) {
-    //dispatcher.dispatchedActions = [];
     dispatcher.actionHash = {};
-    //dispatcher.executedStoreActions = {};
     dispatcher.history = [];
   }
 
@@ -49,13 +38,9 @@ var simfluxViz = function () {
         (function(a, fn) {
           store[a] = function() {
             if (dispatcher.actionHash[a]) {
-              //dispatcher.executedStoreActions[a] = dispatcher.executedStoreActions[a] || [];
-              //dispatcher.executedStoreActions[a].push(store);
               var historyObj = zone.historyObj;
 
               if (historyObj) {
-                //historyObj.executedStoreActions[a] = historyObj.executedStoreActions[a] || [];
-                //historyObj.executedStoreActions[a].push(store);
                 historyObj.actionHistory[historyObj.actionHistory.length-1].stores.push(store);
                 updateHistoryGraph(historyObj);
               } else {
@@ -101,7 +86,6 @@ var simfluxViz = function () {
               actionHistory: [],
               view: viewInfo.fnName,
               viewLocation: viewInfo.location,
-              //executedStoreActions: {},
               date: new Date()
             };
 
@@ -115,11 +99,6 @@ var simfluxViz = function () {
             zone.index = 'root';
             zone.fork({
               afterTask: function () {
-                // @todo: do we still need this?
-                //historyObj.actionHistory = historyObj.actionHistory.concat(dispatcher.dispatchedActions);
-                //dispatcher.dispatchedActions = [];
-                //extendExecutedActions(historyObj.executedStoreActions, dispatcher.executedStoreActions);
-                //dispatcher.executedStoreActions = {};
                 updateHistoryGraph(historyObj);
               }
             }).run(function () {
@@ -153,7 +132,6 @@ var simfluxViz = function () {
 
   var odispatch = simflux.Dispatcher.prototype.dispatch;
   simflux.Dispatcher.prototype.dispatch = function(action) {
-    //this.dispatchedActions.push(action);
     var args = Array.prototype.slice.call(arguments, 0);
 
     this.actionHash[action] = 1;
@@ -169,8 +147,6 @@ var simfluxViz = function () {
     } else {
       warn("simflux-viz: dispatched outside of viz zone");
     }
-
-    //setTimeout(function () {},0); // catch stray actions
 
     return odispatch.apply(this, args);
   };

@@ -626,8 +626,7 @@ Zone.init();
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 if (window.simflux && window.simflux.history) return;  // prevent double-loading
 
-var zone = window.zone || (typeof zone !== 'undefined' ? zone : require('zone.js')),
-    simflux = window.simflux || (typeof simflux !== 'undefined' ? simflux : require('simflux'));
+var simflux = window.simflux || (typeof simflux !== 'undefined' ? simflux : require('simflux'));
 
 var simfluxVizGraphs = require('./simflux-viz-graphs');
 
@@ -648,23 +647,12 @@ var simfluxViz = function () {
     console.error.apply(console, args);
   }
 
-  function extendExecutedActions(a,b) {
-    for (var p in b) {
-      if (a[p])
-        a.concat(b[p]);
-      else
-        a[p] = b[p];
-    }
-  }
-
   function updateHistoryGraph(historyObj) {
     simfluxVizGraphs.updateHistoryGraph(historyObj.index, simfluxVizGraphs.generateHistoryGraphJSON);
   }
 
   function patchDispatcher(dispatcher) {
-    //dispatcher.dispatchedActions = [];
     dispatcher.actionHash = {};
-    //dispatcher.executedStoreActions = {};
     dispatcher.history = [];
   }
 
@@ -675,13 +663,9 @@ var simfluxViz = function () {
         (function(a, fn) {
           store[a] = function() {
             if (dispatcher.actionHash[a]) {
-              //dispatcher.executedStoreActions[a] = dispatcher.executedStoreActions[a] || [];
-              //dispatcher.executedStoreActions[a].push(store);
-              var historyObj = zone.historyObj;
+              var historyObj = window.zone.historyObj;
 
               if (historyObj) {
-                //historyObj.executedStoreActions[a] = historyObj.executedStoreActions[a] || [];
-                //historyObj.executedStoreActions[a].push(store);
                 historyObj.actionHistory[historyObj.actionHistory.length-1].stores.push(store);
                 updateHistoryGraph(historyObj);
               } else {
@@ -727,7 +711,6 @@ var simfluxViz = function () {
               actionHistory: [],
               view: viewInfo.fnName,
               viewLocation: viewInfo.location,
-              //executedStoreActions: {},
               date: new Date()
             };
 
@@ -738,19 +721,14 @@ var simfluxViz = function () {
             var args = Array.prototype.slice.call(arguments, 0);
             var r;
 
-            zone.index = 'root';
-            zone.fork({
+            var fz = window.zone.fork({
               afterTask: function () {
-                // @todo: do we still need this?
-                //historyObj.actionHistory = historyObj.actionHistory.concat(dispatcher.dispatchedActions);
-                //dispatcher.dispatchedActions = [];
-                //extendExecutedActions(historyObj.executedStoreActions, dispatcher.executedStoreActions);
-                //dispatcher.executedStoreActions = {};
                 updateHistoryGraph(historyObj);
               }
-            }).run(function () {
-              zone.historyObj = historyObj;
-              zone.index = historyObj.index;
+            });
+            fz.run(function () {
+              fz.historyObj = historyObj;
+              fz.index = historyObj.index;
               r = fn.apply(thisObj, args); // this runs synchronously so r is always returned below
             });
             return r;
@@ -779,10 +757,11 @@ var simfluxViz = function () {
 
   var odispatch = simflux.Dispatcher.prototype.dispatch;
   simflux.Dispatcher.prototype.dispatch = function(action) {
-    //this.dispatchedActions.push(action);
     var args = Array.prototype.slice.call(arguments, 0);
 
     this.actionHash[action] = 1;
+
+    var zone = window.zone;
 
     if (zone.historyObj) {
       var actionHistoryObj = {
@@ -795,8 +774,6 @@ var simfluxViz = function () {
     } else {
       warn("simflux-viz: dispatched outside of viz zone");
     }
-
-    //setTimeout(function () {},0); // catch stray actions
 
     return odispatch.apply(this, args);
   };
@@ -827,7 +804,7 @@ var simfluxViz = function () {
 
 simfluxVizGraphs.initHistoryGraph();
 simfluxViz();
-},{"./simflux-viz-graphs":3,"simflux":"simflux","zone.js":"zone.js"}],2:[function(require,module,exports){
+},{"./simflux-viz-graphs":3,"simflux":"simflux"}],2:[function(require,module,exports){
 // A Simple way to represent nodes in a graph
 
 function SimfluxGraph() {

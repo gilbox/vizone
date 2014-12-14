@@ -1,7 +1,6 @@
 if (window.simflux && window.simflux.history) return;  // prevent double-loading
 
-var zone = window.zone || (typeof zone !== 'undefined' ? zone : require('zone.js')),
-    simflux = window.simflux || (typeof simflux !== 'undefined' ? simflux : require('simflux'));
+var simflux = window.simflux || (typeof simflux !== 'undefined' ? simflux : require('simflux'));
 
 var simfluxVizGraphs = require('./simflux-viz-graphs');
 
@@ -38,7 +37,7 @@ var simfluxViz = function () {
         (function(a, fn) {
           store[a] = function() {
             if (dispatcher.actionHash[a]) {
-              var historyObj = zone.historyObj;
+              var historyObj = window.zone.historyObj;
 
               if (historyObj) {
                 historyObj.actionHistory[historyObj.actionHistory.length-1].stores.push(store);
@@ -96,14 +95,14 @@ var simfluxViz = function () {
             var args = Array.prototype.slice.call(arguments, 0);
             var r;
 
-            zone.index = 'root';
-            zone.fork({
+            var fz = window.zone.fork({
               afterTask: function () {
                 updateHistoryGraph(historyObj);
               }
-            }).run(function () {
-              zone.historyObj = historyObj;
-              zone.index = historyObj.index;
+            });
+            fz.run(function () {
+              fz.historyObj = historyObj;
+              fz.index = historyObj.index;
               r = fn.apply(thisObj, args); // this runs synchronously so r is always returned below
             });
             return r;
@@ -135,6 +134,8 @@ var simfluxViz = function () {
     var args = Array.prototype.slice.call(arguments, 0);
 
     this.actionHash[action] = 1;
+
+    var zone = window.zone;
 
     if (zone.historyObj) {
       var actionHistoryObj = {

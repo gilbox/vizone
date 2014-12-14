@@ -22,6 +22,7 @@ gulp.task('build', ['build1'], function () {
   return gulp.src(['./src/zone-patch/simflux-zone-pre.js.part', './node_modules/zone.js/zone.js', './src/zone-patch/simflux-zone-post.js.part', './tmp/simflux-viz-build1.js'])
     .pipe($.concat('simflux-viz-bundle.js'))
     .pipe(gulp.dest('./dist'))
+    .pipe(gulp.dest('./demo-gauntlet'))
     .pipe(gulp.dest('./demo'));
 });
 
@@ -74,6 +75,14 @@ gulp.task('zip', ['build', 'build-devtool'], function() {
   return gulp.src(['devtool/**', '!devtool/**/*.map'])
     .pipe($.zip(distFileName))
     .pipe(gulp.dest('dist'));
+});
+
+gulp.task('build-gauntlet', ['build', 'build-devtool'], function () {
+  return browserify('./demo-gauntlet/src/app.jsx')
+    .transform(reactify, { harmony: true })
+    .bundle()
+    .pipe(source('app.js'))
+    .pipe(gulp.dest('./demo-gauntlet'))
 });
 
 gulp.task('watch', ['default'], function() {

@@ -8,3 +8,5 @@ src/components/*.js
 npm-debug.log
 dist/*.zip
 devtool/**/*
+demo-gauntlet/app.js
+demo-gauntlet/simflux-viz-bundle.js

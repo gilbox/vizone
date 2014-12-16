@@ -21,11 +21,13 @@ var Timeline = React.createClass({
   render: function() {
     var binding = this.getDefaultBinding(),
         history = binding.get('history'),
+        count = history.get('count'),
+        startIdx = history.get('startIdx'),
         currentChartIndex = binding.get('currentChartIndex'),
         dots = [],
-        lastIdx = history.startIdx+history.count;
+        lastIdx = startIdx+count;
 
-    for (var i = history.startIdx; i < lastIdx; i++) {
+    for (var i = startIdx; i < lastIdx; i++) {
       var classes = 'Timeline-dot';
       if (i === currentChartIndex) classes += ' is-selected';
 

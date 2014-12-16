@@ -17,4 +17,6 @@ var flux = {
   ctx: ctx
 };
 
+window.flux = flux; // just for console playing
+
 module.exports = flux;

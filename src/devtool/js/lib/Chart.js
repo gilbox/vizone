@@ -42,42 +42,51 @@ function Chart(el) {
   this.clickEventListeners = [];
 }
 
-Chart.prototype.renderChart = function(data) {
+Chart.prototype.renderChart = function(nodes) {
+  nodes = nodes || [];
+
   var svg = this.svg,
       inner = this.inner,
       _this = this;
 
   var g = new dagreD3.graphlib.Graph().setGraph({});
 
-  data.nodes.forEach(function(node, i) {
-    var name = node.name,
-      value = {};
+  nodes.forEach(function(node, i) {
+    var value = {};
 
-    value.label = strTransform[node.type](node);
-    value.simpleName = strTransform[node.type+'Simple'](node);
+    //value.label = strTransform[node.type](node);
+    //value.simpleName = strTransform[node.type+'Simple'](node);
+    value.label = node.title;
     value.labelType = 'html';
-    value.location = node.location;
+    //value.location = node.location;
     value.rx = value.ry = 5;
     value.id = "node-"+i;
     value.class = "Node";
 
-    g.setNode(name, value);
+    g.setNode(i, value);
+
+    if (! isNaN(node.$$$parent)) {
+      g.setEdge(node.$$$parent, i, {label:'', lineInterpolate:'basis'});
+    }
   });
 
-  data.arrows.forEach(function (arrow) {
-    g.setEdge(arrow.a, arrow.b, {label:'', lineInterpolate:'basis'});
-  });
+  //data.arrows.forEach(function (arrow) {
+  //  g.setEdge(arrow.a, arrow.b, {label:'', lineInterpolate:'basis'});
+  //});
 
   // Create the renderer
   var render = new dagreD3.render();
 
+  if (nodes.length) {
 
-  // Set up zoom support
-  var zoom = d3.behavior.zoom().on("zoom", function() {
-    inner.attr("transform", "translate(" + d3.event.translate + ")" +
-    "scale(" + d3.event.scale + ")");
-  });
-  svg.call(zoom);
+    // Set up zoom support
+    var zoom = d3.behavior.zoom().on("zoom", function() {
+      inner.attr("transform", "translate(" + d3.event.translate + ")" +
+      "scale(" + d3.event.scale + ")");
+    });
+    svg.call(zoom);
+
+  }
 
   // Simple function to style the tooltip for the given node.
   //var styleTooltip = function(name, description) {
@@ -87,7 +96,9 @@ Chart.prototype.renderChart = function(data) {
   // Run the renderer. This is what draws the final graph.
   render(inner, g);
 
-  this.clickEventListeners.forEach(function (obj) {
+  if (!nodes.length) return;
+
+  /*this.clickEventListeners.forEach(function (obj) {
     obj.o.removeEventListener('click', obj.f);
   });
   this.clickEventListeners = [];
@@ -104,7 +115,7 @@ Chart.prototype.renderChart = function(data) {
       };
       this.addEventListener('click', clickListener);
       _this.clickEventListeners.push({o: this, f: clickListener});
-    });
+    });*/
 
   // Center the graph
   var initialScale = 0.75,

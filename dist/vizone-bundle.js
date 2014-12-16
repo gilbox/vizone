@@ -624,11 +624,20 @@ Zone.init();
 })();
 }
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+
+// patches should require vizone.js
+// patches should fail silently if their host frameworks are missing
+// patches should announce load success by printing colorful message to the console
+
+require('./patches/simflux-viz');
+},{"./patches/simflux-viz":2}],2:[function(require,module,exports){
 if (window.simflux && window.simflux.history) return;  // prevent double-loading
 
-var simflux = window.simflux || (typeof simflux !== 'undefined' ? simflux : require('simflux'));
+var simflux = window.simflux || (typeof simflux !== 'undefined' ? simflux : (require.isDefined('simflux') && require('simflux')));
 
-var vizone = require('./vizone');
+if (!simflux) return; // fail silently
+
+var vizone = require('./../vizone');
 
 var simfluxViz = function () {
 
@@ -776,7 +785,7 @@ var simfluxViz = function () {
 };
 
 simfluxViz();
-},{"./vizone":3,"simflux":"simflux"}],2:[function(require,module,exports){
+},{"./../vizone":4,"simflux":"simflux"}],3:[function(require,module,exports){
 'use strict';
 
 var contEl, historyMax = 1000, historyCount = 0;
@@ -815,7 +824,7 @@ module.exports = {
   appendToHistoryGraph: appendToHistoryGraph,
   initHistoryGraph: initHistoryGraph
 };
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 var vizoneDOM = require('./vizone-dom');
 
 vizoneDOM.initHistoryGraph();
@@ -836,14 +845,24 @@ vizoneDOM.initHistoryGraph();
 // the tree of application flow
 //
 // parentItem is optional: it will additionally insert an item
-// as the parent of newItem
-function vizone(fn, newItem, parentItem) {
+// as the only parent of newItem
+//
+// forceRoot will make this occurence a root node even
+// if it would have had a parent node under normal circumstances.
+// Note that if parentItem is supplied, then it will be the root,
+// and newItem will be the only child of parentItem.
+function vizone(fn, newItem, parentItem, forceRoot) {
   if (parentItem) {
     return vizone(vizone.bind(null, fn, newItem), parentItem);
   }
 
-  var zone = window.zone,
-    historyObj = zone.historyObj || {
+  var zone = window.zone;
+
+  if (forceRoot && zone.historyObj) {
+    zone.fork().run(vizone.bind(null, fn, parentItem, newItem));
+  }
+
+  var historyObj = zone.historyObj || {
         items: []
       };
 
@@ -854,13 +873,11 @@ function vizone(fn, newItem, parentItem) {
 
     newItem.$$$parent = zone.historyItem.$$$index;
     newItem.$$$zoneIndex = zone.historyObj.zoneIndex;
+
   } else {
     // root:
     // if the current zone doesn't have a historyObj property,
     // this must be the root item
-
-    // @todo
-    // if (!zone.history) vizone.rootZones.push(zone)
 
     zone.history = zone.history || [];
     newItem.$$$zoneIndex = historyObj.zoneIndex = zone.history.length;
@@ -889,4 +906,4 @@ function vizone(fn, newItem, parentItem) {
 }
 
 module.exports = vizone;
-},{"./vizone-dom":2}]},{},[1]);
+},{"./vizone-dom":3}]},{},[1]);

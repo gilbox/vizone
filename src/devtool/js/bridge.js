@@ -1,6 +1,5 @@
 var graphContEl,
-    pollFreq = 1000,
-    prevGraphCount = 0;
+    pollFreq = 500;
 
 function insertScriptLoader(src) {
   var script = document.createElement("script");
@@ -21,39 +20,34 @@ function insertScriptLoader(src) {
 var simfluxNotPresent = !! document.getElementById('simflux-not-present');
 
 if (! document.getElementById('simflux-viz-script') && ! simfluxNotPresent) {
-//insertScriptLoader("http://0.0.0.0:3101/demo/simflux-viz-bundle.js");
-  insertScriptLoader("https://rawgit.com/gilbox/simflux-viz/master/dist/simflux-viz-bundle.js");
+insertScriptLoader("http://localhost:3101/demo/vizone-bundle.js");
+  //insertScriptLoader("https://rawgit.com/gilbox/simflux-viz/master/dist/vizone-bundle.js");
 }
 
 function pollGraph() {
-  var count = ~~graphContEl.dataset.updateCount;
-  if (count !== prevGraphCount) {
-    // graph count changed
+  if (graphContEl.children.length) {
 
-    var idx = ~~ graphContEl.dataset.startIndex,
-        el,
+    var el,
         data = {
-          startIdx: idx,
-          count: 0
+          tabId: window.simfluxTabId,
+          type: 'vizone-history',
+          items: []
         };
 
-    while (el = document.getElementById('simflux-history-'+idx)) {
-      data[idx] = JSON.parse(el.innerText);
-      data.count++;
-      idx++;
+    while (el = graphContEl.children[0]) {
+      data.items.push(JSON.parse(el.innerText));
+      el.remove();
     }
 
-    data.tabId = window.simfluxTabId;
-
     chrome.extension.sendMessage(data);
-    prevGraphCount = count;
+
   }
   setTimeout(pollGraph, pollFreq);
 }
 
 function findGraphEl() {
   if ( ! document.getElementById('simflux-not-present') ) {
-    graphContEl = document.getElementById("simflux-history-container");
+    graphContEl = document.getElementById("vizone");
     if (!graphContEl) return setTimeout(findGraphEl, pollFreq);
     pollGraph();
   }

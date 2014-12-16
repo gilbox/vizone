@@ -6,7 +6,7 @@ var Morearty = require('morearty'),
 // This sets up the root-level Immutable data object.
 // The react view components will be bound directly to this root
 // or any of its descendant bindings (created via binding.sub(..)) via Morearty.Mixin
-var ctx = Morearty.createContext(Immutable.Map({
+var ctx = Morearty.createContext(Immutable.fromJS({
   history: {
     startIdx: 0,
     count: 0

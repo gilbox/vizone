@@ -7,11 +7,12 @@ var FlowChart = React.createClass({
   mixins: [Morearty.Mixin],
 
   shouldComponentUpdateOverride: function (shouldComponentUpdate, nextProps) {
-    var changed = shouldComponentUpdate(),
-        binding = this.getDefaultBinding(),
-        chart = binding.get();
 
-    if (changed) this.chart.renderChart(chart);
+    if (shouldComponentUpdate()) {
+      this.chart.renderChart(
+        this.getDefaultBinding().toJS()
+      );
+    }
 
     // always return false because d3 will take care of re-render
     return false;

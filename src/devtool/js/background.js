@@ -17,6 +17,11 @@ chrome.extension.onConnect.addListener(function(port) {
 
   chrome.webNavigation.onCompleted.addListener(function(details) {
     if (! details.url.match(/^chrome:|about:/)) {
+      chrome.extension.sendMessage({
+        tabId: details.tabId,
+        type: 'vizone-reset'
+      });
+
       // @todo: there must be a better way to determine the tabId from bridge.js ?!
       chrome.tabs.executeScript(details.tabId, {code: "window.simfluxTabId="+details.tabId+";"});
 

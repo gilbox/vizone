@@ -7,20 +7,20 @@ var gulp            = require('gulp'),
 gulp.task('build1', [], function () {
 
   // packaged without zone.js
-  return browserify('./src/simflux-viz.js')
+  return browserify('./src/vizone/index.js')
     .external('simflux')
     .external('zone.js')
     .external('zone')
     .bundle()
-    .pipe(source('simflux-viz-build1.js'))
+    .pipe(source('vizone-build1.js'))
     .pipe(gulp.dest('./tmp'))
 });
 
 gulp.task('build', ['build1'], function () {
 
   // packaged with zone.js
-  return gulp.src(['./src/zone-patch/simflux-zone-pre.js.part', './node_modules/zone.js/zone.js', './src/zone-patch/simflux-zone-post.js.part', './tmp/simflux-viz-build1.js'])
-    .pipe($.concat('simflux-viz-bundle.js'))
+  return gulp.src(['./src/zone-patch/zone-pre.js.part', './node_modules/zone.js/zone.js', './src/zone-patch/zone-post.js.part', './tmp/vizone-build1.js'])
+    .pipe($.concat('vizone-bundle.js'))
     .pipe(gulp.dest('./dist'))
     .pipe(gulp.dest('./demo-gauntlet'))
     .pipe(gulp.dest('./demo'));
@@ -32,9 +32,6 @@ function browserifyDevtool(file) {
     return browserify()
       .transform(reactify, { harmony: true })
       .add(file)
-      //.external('simflux')
-      .external('zone.js')
-      .external('zone')
       .bundle()
       .pipe(source(outFile))
       .pipe(gulp.dest('./'))

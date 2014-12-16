@@ -1,8 +1,10 @@
 if (window.simflux && window.simflux.history) return;  // prevent double-loading
 
-var simflux = window.simflux || (typeof simflux !== 'undefined' ? simflux : require('simflux'));
+var simflux = window.simflux || (typeof simflux !== 'undefined' ? simflux : (require.isDefined('simflux') && require('simflux')));
 
-var simfluxVizGraphs = require('./simflux-viz-graphs');
+if (!simflux) return; // fail silently
+
+var vizone = require('./../vizone');
 
 var simfluxViz = function () {
 
@@ -11,22 +13,18 @@ var simfluxViz = function () {
   // make sure simflux is attached to window since by default it doesn't have to be
   window.simflux = simflux;
 
-  function warn() {
-    var args = [
-      '%c' + arguments[0],
-      'color:darkorange'
-    ].concat(Array.prototype.slice.call(arguments, 1));
+  //function warn() {
+  //  var args = [
+  //    '%c' + arguments[0],
+  //    'color:darkorange'
+  //  ].concat(Array.prototype.slice.call(arguments, 1));
+  //
+  //  // use console.error to get a proper stack trace
+  //  console.error.apply(console, args);
+  //}
 
-    // use console.error to get a proper stack trace
-    console.error.apply(console, args);
-  }
-
-  function updateHistoryGraph(historyObj) {
-    simfluxVizGraphs.updateHistoryGraph(historyObj.index, simfluxVizGraphs.generateHistoryGraphJSON);
-  }
 
   function patchDispatcher(dispatcher) {
-    dispatcher.actionHash = {};
     dispatcher.history = [];
   }
 
@@ -36,17 +34,15 @@ var simfluxViz = function () {
       if (store.hasOwnProperty(a) && typeof store[a] === 'function') {
         (function(a, fn) {
           store[a] = function() {
-            if (dispatcher.actionHash[a]) {
-              var historyObj = window.zone.historyObj;
-
-              if (historyObj) {
-                historyObj.actionHistory[historyObj.actionHistory.length-1].stores.push(store);
-                updateHistoryGraph(historyObj);
-              } else {
-                warn("simflux-viz: store action handler invoked outside of viz zone");
+            return vizone(
+              Function.apply.bind(fn, this, Array.prototype.slice.call(arguments, 0)),
+              {
+                type: 'store-action-handler',
+                title: store.storeName + "(" + a + ")"
+                //store: store,
+                //action: a
               }
-            }
-            return fn.apply(this, Array.prototype.slice.call(arguments, 0));
+            );
           };
         })(a, store[a]);
       }
@@ -74,38 +70,27 @@ var simfluxViz = function () {
 
             var stack = new Error().stack;
             //console.log("-->stack: ", stack);
-            var viewInfo = parseStackLine2(stack, '[view]');
+            var viewInfo = parseStackLine2(stack, '[view]'),
+                args = Array.prototype.slice.call(arguments, 0);
 
             var historyObj = {
-              index: simflux.history.length,
-              dispatcher: dispatcher,
-              preAction: pa,
-              preActionFn: fn,
-              actionCreator: ac,
-              actionHistory: [],
-              view: viewInfo.fnName,
-              viewLocation: viewInfo.location,
-              date: new Date()
+              type: 'pre-action',
+              title: ac.name || '[Action Creator]'
+              //preAction: pa,
+              //preActionFn: fn,
+              //actionCreator: ac,
+              //actionHistory: [],
+              //view: viewInfo.fnName,
+              //viewLocation: viewInfo.location,
+              //date: new Date()
             };
 
-            simflux.history.push(historyObj);
-            dispatcher.history.push(historyObj);
+            var parentObj = {
+              type: 'view',
+              title: viewInfo.fnName
+            };
 
-            var thisObj = this;
-            var args = Array.prototype.slice.call(arguments, 0);
-            var r;
-
-            var fz = window.zone.fork({
-              afterTask: function () {
-                updateHistoryGraph(historyObj);
-              }
-            });
-            fz.run(function () {
-              fz.historyObj = historyObj;
-              fz.index = historyObj.index;
-              r = fn.apply(thisObj, args); // this runs synchronously so r is always returned below
-            });
-            return r;
+            return vizone(Function.apply.bind(fn, this, args), historyObj, parentObj);
           };
         })(a, ac[a]);
       }
@@ -131,25 +116,15 @@ var simfluxViz = function () {
 
   var odispatch = simflux.Dispatcher.prototype.dispatch;
   simflux.Dispatcher.prototype.dispatch = function(action) {
-    var args = Array.prototype.slice.call(arguments, 0);
-
-    this.actionHash[action] = 1;
-
-    var zone = window.zone;
-
-    if (zone.historyObj) {
-      var actionHistoryObj = {
-        action: action,
-        stores: [],
-        args: args.slice(1)
-      };
-      zone.historyObj.actionHistory.push(actionHistoryObj);
-      updateHistoryGraph(zone.historyObj);
-    } else {
-      warn("simflux-viz: dispatched outside of viz zone");
-    }
-
-    return odispatch.apply(this, args);
+    return vizone(
+      Function.apply.bind(odispatch, this, Array.prototype.slice.call(arguments, 0)),
+      {
+        type: 'dispatch',
+        title: action
+        //action: action,
+        //args: Array.prototype.slice.call(arguments, 1)
+      }
+    );
   };
 
   var oregisterActionCreator = simflux.Dispatcher.prototype.registerActionCreator;
@@ -176,5 +151,4 @@ var simfluxViz = function () {
   console.log("%csimflux-viz loaded", "color:white; background-color:orange; font-size: 14pt; border-radius:8px; padding: 0 10px; font-family:Verdana;");
 };
 
-simfluxVizGraphs.initHistoryGraph();
 simfluxViz();

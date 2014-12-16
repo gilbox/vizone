@@ -3,9 +3,11 @@ var simflux = require('simflux'),
     dispatcher = require('./dispatcher.jsx');
 
 var actionCreator = dispatcher.registerActionCreator({
+
   clickTimelineDot: function (dot) {
     dispatcher.dispatch('click:timeline:dot', dot);
   },
+
   init: function () {
     var tabId = chrome.devtools.inspectedWindow.tabId;
 
@@ -18,9 +20,16 @@ var actionCreator = dispatcher.registerActionCreator({
     //        (maybe we should think of the stream as a view component)
     // Listen to messages from the background page
     port.onMessage.addListener(function(message) {
-      if (message.tabId === tabId && 'startIdx' in message) {
-        //_this.processHistory(message);
-        dispatcher.dispatch('process:chart:data', {history:message});
+      if (message.tabId === tabId) {
+
+        if (message.type === 'vizone-history') {
+          dispatcher.dispatch('process:chart:data', message);
+        }
+
+        else if (message.type === 'vizone-reset') {
+          dispatcher.dispatch('reset');
+        }
+
       }
     });
   }

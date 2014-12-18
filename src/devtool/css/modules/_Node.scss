@@ -1,0 +1,74 @@
+.Node:hover > rect {
+  fill: $dkgrey;
+}
+
+.Node:hover * {
+  color: $offwhite !important;
+}
+
+.Node-node {
+  max-width: 200px;
+}
+
+.Node--actionOriginator .Node-node,
+.Node--actionCreator .Node-node {
+  max-width: 800px;
+}
+
+.Node-title {
+  font-size: 18px;
+}
+
+.Node-argObjectKey {
+  color: $dkgrey;
+
+  &:after {
+    content: ": ";
+  }
+}
+
+.Node-argObjectVal {
+
+}
+
+.Node-arg {
+  border-top: 1px solid $xltgrey;
+  margin-top: 2px;
+  white-space: nowrap;
+
+  &:first-child {
+    margin-top: 8px;
+  }
+}
+
+.Node--action {
+  margin:0;
+
+  > rect {
+    fill: #ffb;
+  }
+}
+
+.Node--store {
+  color: $offwhite;
+
+  > rect {
+    fill: $dkblue;
+  }
+
+  .Node-subtitle {
+    color: $xltgrey;
+  }
+}
+
+.Node--actionCreator {
+  color: $offwhite;
+
+  > rect {
+    fill: $orange;
+  }
+
+  .Node-subtitle {
+    color: $xltgrey;
+  }
+}

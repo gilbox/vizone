@@ -4,6 +4,16 @@ var gulp            = require('gulp'),
     $               = require('gulp-load-plugins')(),
     reactify = require('reactify');
 
+function onError(e) {
+  console.log("SASS Error>>", e);
+}
+gulp.task('devtool-sass', [], function() {
+  return gulp.src('./src/devtool/css/panel.scss')
+    .pipe($.plumber({ errorHandler: onError }))
+    .pipe($.rubySass())
+    .pipe(gulp.dest('./devtool/'));
+});
+
 gulp.task('build1', [], function () {
 
   // packaged without zone.js
@@ -48,7 +58,7 @@ var devtoolFilesToCompile = [
     devtoolCompileTasks = [];
 
 gulp.task('devtool-copy', function () {
-  gulp.src(['./src/devtool/**/*'].concat(devtoolFilesDontCopy))
+  gulp.src(['./src/devtool/**/*', '!./src/devtool/**/*.scss'].concat(devtoolFilesDontCopy))
     .pipe(gulp.dest('./devtool'));
 });
 
@@ -58,7 +68,7 @@ devtoolCompileTasks = devtoolFilesToCompile.map(function (file,i) {
   return taskName;
 });
 
-gulp.task('build-devtool', ['devtool-copy'].concat(devtoolCompileTasks));
+gulp.task('build-devtool', ['devtool-sass','devtool-copy'].concat(devtoolCompileTasks));
 
 gulp.task('zip', ['build', 'build-devtool'], function() {
   var manifest = require('./src/devtool/manifest'),

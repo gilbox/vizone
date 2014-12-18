@@ -672,7 +672,7 @@ var simfluxViz = function () {
               {
                 title: store.storeName,
                 subtitle: a,
-                class: 'Node-store',
+                class: 'Node--store',
                 sourceLink: {
                   label: store.storeName,
                   url: store.$$$stackInfo.location
@@ -716,7 +716,8 @@ var simfluxViz = function () {
               sourceLink: {
                 label: acName,
                 url: ac.$$$stackInfo.location
-              }
+              },
+              class: 'Node--actionCreator'
             };
 
             var parentObj = {
@@ -724,7 +725,8 @@ var simfluxViz = function () {
               sourceLink: {
                 label: viewInfo.fnName,
                 url: viewInfo.location
-              }
+              },
+              class: 'Node--actionOriginator'
             };
 
             return vizone(Function.apply.bind(fn, this, args), historyObj, parentObj);
@@ -758,7 +760,7 @@ var simfluxViz = function () {
       {
         title: action,
         args: Array.prototype.slice.call(arguments, 1),
-        class: 'Node-action'
+        class: 'Node--action'
       }
     );
   };

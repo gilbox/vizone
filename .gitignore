@@ -10,3 +10,4 @@ dist/*.zip
 devtool/**/*
 demo-gauntlet/app.js
 demo-gauntlet/vizone-bundle.js
+.sass-cache/

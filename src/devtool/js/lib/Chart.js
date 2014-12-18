@@ -35,7 +35,7 @@ Chart.prototype.renderChart = function(nodes) {
 
     value.rx = value.ry = 5;
     value.id = "node-"+i;
-    value.class = node.class || 'Node';
+    value.class = node.class ? (node.class + ' Node') : 'Node';
 
     g.setNode(i, value);
 
@@ -83,6 +83,7 @@ Chart.prototype.renderChart = function(nodes) {
       var clickListener = function () {
         var url = g.node(v).linkUrl;
         if (url) {
+          var consoleMsg = url + '  <-- ' + g.node(v).linkLabel;
           sendObjectToInspectedPage({action: "code", content: "console.log('%c"+consoleMsg+"', 'border: 1px solid orange; background: orange; color:white; border-radius: 5px; padding: 5px; line-height:25px;')"});
         }
       };

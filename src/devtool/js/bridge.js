@@ -20,8 +20,8 @@ function insertScriptLoader(src) {
 var simfluxNotPresent = !! document.getElementById('simflux-not-present');
 
 if (! document.getElementById('simflux-viz-script') && ! simfluxNotPresent) {
-insertScriptLoader("http://localhost:3101/demo/vizone-bundle.js");
-  //insertScriptLoader("https://rawgit.com/gilbox/simflux-viz/master/dist/vizone-bundle.js");
+//insertScriptLoader("http://localhost:3101/demo/vizone-bundle.js");
+  insertScriptLoader("https://rawgit.com/gilbox/simflux-viz/master/dist/vizone-bundle.js");
 }
 
 function pollGraph() {

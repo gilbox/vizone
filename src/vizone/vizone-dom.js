@@ -7,7 +7,6 @@ function initHistoryGraph() {
     contEl = document.createElement("div");
     contEl.id = "vizone";
     contEl.style.display = 'none';
-    contEl.dataset.updateCount = 0;
     document.body.appendChild(contEl);
   }
 }
@@ -28,8 +27,7 @@ function appendToHistoryGraph(historyObj, newItem) {
     }
   }
 
-  // we'll use this to monitor for changes
-  contEl.dataset.updateCount = historyCount++;
+  historyCount++;
 }
 
 module.exports = {

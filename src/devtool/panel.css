@@ -58,11 +58,7 @@ text {
   color: blue;
 }
 
-.NodeStore-store {
-  margin:0;
-}
-
-.NodeStore-action {
+.Node-store .Node-subtitle {
   color: grey;
 }
 

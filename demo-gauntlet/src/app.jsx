@@ -6,7 +6,7 @@ var dispatcher = simflux.instantiateDispatcher('Gauntlet Dispatcher');
 var actionCreator = dispatcher.registerActionCreator({
   name: "Gauntlet Action Creator",
   one: function(data) {
-    dispatcher.dispatch('one', data);
+    dispatcher.dispatch('one', {data:data, lorem: 'ipsum dolor', count: 99123111420, date: new Date(), something: 'This is Filler!' });
     setTimeout( dispatcher.dispatch.bind(dispatcher, 'two', data), 125);
     setTimeout( dispatcher.dispatch.bind(dispatcher, 'three', data), 250);
   },

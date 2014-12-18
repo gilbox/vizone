@@ -1,40 +1,10 @@
-// printf-ish-style formatting
-function fstr(str) {
-  var args = Array.prototype.slice.call(arguments, 1);
-  return str.replace(/{(\d+)}/g, function(match, number) {
-    return typeof args[number] != 'undefined'
-      ? args[number]
-      : match
-      ;
-  });
-}
-
-// templates for generating graph node html
-var strTransform = {
-  view: ['<b>{0}</b>', 'view'],
-  viewSimple: ['{0}', 'view'],
-  preAction: ['{0}.<b>{1}</b>', 'acName', 'preAction'],
-  preActionSimple: ['{0}', 'acName'],
-  action: ['<h3 class="NodeAction-action">{0}</h3><pre class="NodeAction-code">{1}</pre>', 'action', 'args' ],
-  actionSimple: ['{0}', 'action'],
-  store: ['<h3 class="NodeStore-store">{0}</h3><small class="NodeStore-action">{1}</small>', 'store', 'action'],
-  storeSimple: ['{0}', 'store']
-};
-_.forEach(strTransform,function (meta, type) {
-  strTransform[type] = function(o) {
-    var args = [meta[0]];
-    for (var i = 1; i<meta.length; i++) {
-      args.push(o[meta[i]]);
-    }
-    return fstr.apply(null, args);
-  }
-});
+var React = require('react'),
+    Node = require('../components/Node.jsx');
 
 function sendObjectToInspectedPage(message) {
   message.tabId = chrome.devtools.inspectedWindow.tabId;
   chrome.extension.sendMessage(message);
 }
-
 
 function Chart(el) {
   this.svg = d3.select(el);
@@ -54,14 +24,18 @@ Chart.prototype.renderChart = function(nodes) {
   nodes.forEach(function(node, i) {
     var value = {};
 
-    //value.label = strTransform[node.type](node);
-    //value.simpleName = strTransform[node.type+'Simple'](node);
-    value.label = node.title;
+    // @todo: it would probably be more performant to use Handlebars, or similar here
+    value.label = React.renderToStaticMarkup(<Node node={node} />);
+
     value.labelType = 'html';
-    //value.location = node.location;
+    if (node.sourceLink) {
+      value.linkLabel = node.sourceLink.label;
+      value.linkUrl = node.sourceLink.url;
+    }
+
     value.rx = value.ry = 5;
     value.id = "node-"+i;
-    value.class = "Node";
+    value.class = node.class || 'Node';
 
     g.setNode(i, value);
 
@@ -98,24 +72,23 @@ Chart.prototype.renderChart = function(nodes) {
 
   if (!nodes.length) return;
 
-  /*this.clickEventListeners.forEach(function (obj) {
+  this.clickEventListeners.forEach(function (obj) {
     obj.o.removeEventListener('click', obj.f);
   });
   this.clickEventListeners = [];
 
   inner.selectAll("g.node")
-    .attr("data-clickable", function(v) { return g.node(v).location ? 'true' : 'false' })
+    .attr("data-clickable", function(v) { return g.node(v).linkUrl ? 'true' : 'false' })
     .each(function(v) {
       var clickListener = function () {
-        var url = g.node(v).location;
+        var url = g.node(v).linkUrl;
         if (url) {
-          var consoleMsg = url + '  <-- ' + g.node(v).simpleName;
           sendObjectToInspectedPage({action: "code", content: "console.log('%c"+consoleMsg+"', 'border: 1px solid orange; background: orange; color:white; border-radius: 5px; padding: 5px; line-height:25px;')"});
         }
       };
       this.addEventListener('click', clickListener);
       _this.clickEventListeners.push({o: this, f: clickListener});
-    });*/
+    });
 
   // Center the graph
   var initialScale = 0.75,

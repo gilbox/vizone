@@ -20,7 +20,7 @@ vizoneDOM.initHistoryGraph();
 // parentItem is optional: it will additionally insert an item
 // as the only parent of newItem
 //
-// forceRoot will make this occurence a root node even
+// forceRoot will make this occurrence a root node even
 // if it would have had a parent node under normal circumstances.
 // Note that if parentItem is supplied, then it will be the root,
 // and newItem will be the only child of parentItem.

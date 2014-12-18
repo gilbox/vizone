@@ -37,10 +37,13 @@ var simfluxViz = function () {
             return vizone(
               Function.apply.bind(fn, this, Array.prototype.slice.call(arguments, 0)),
               {
-                type: 'store-action-handler',
-                title: store.storeName + "(" + a + ")"
-                //store: store,
-                //action: a
+                title: store.storeName,
+                subtitle: a,
+                class: 'Node-store',
+                sourceLink: {
+                  label: store.storeName,
+                  url: store.$$$stackInfo.location
+                }
               }
             );
           };
@@ -71,23 +74,24 @@ var simfluxViz = function () {
             var stack = new Error().stack;
             //console.log("-->stack: ", stack);
             var viewInfo = parseStackLine2(stack, '[view]'),
-                args = Array.prototype.slice.call(arguments, 0);
+                args = Array.prototype.slice.call(arguments, 0),
+                acName = (ac.name || '[Action Creator]');
 
             var historyObj = {
-              type: 'pre-action',
-              title: ac.name || '[Action Creator]'
-              //preAction: pa,
-              //preActionFn: fn,
-              //actionCreator: ac,
-              //actionHistory: [],
-              //view: viewInfo.fnName,
-              //viewLocation: viewInfo.location,
-              //date: new Date()
+              title: acName + '.<b>' + pa + '</b>',
+              args: args,
+              sourceLink: {
+                label: acName,
+                url: ac.$$$stackInfo.location
+              }
             };
 
             var parentObj = {
-              type: 'view',
-              title: viewInfo.fnName
+              title: viewInfo.fnName,
+              sourceLink: {
+                label: viewInfo.fnName,
+                url: viewInfo.location
+              }
             };
 
             return vizone(Function.apply.bind(fn, this, args), historyObj, parentObj);
@@ -119,10 +123,9 @@ var simfluxViz = function () {
     return vizone(
       Function.apply.bind(odispatch, this, Array.prototype.slice.call(arguments, 0)),
       {
-        type: 'dispatch',
-        title: action
-        //action: action,
-        //args: Array.prototype.slice.call(arguments, 1)
+        title: action,
+        args: Array.prototype.slice.call(arguments, 1),
+        class: 'Node-action'
       }
     );
   };

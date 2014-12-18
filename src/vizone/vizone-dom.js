@@ -2,16 +2,16 @@
 
 var contEl, historyMax = 1000, historyCount = 0;
 
-function initHistoryGraph() {
+function initHistoryGraph(rootEl) {
   if (!contEl) {
     contEl = document.createElement("div");
     contEl.id = "vizone";
     contEl.style.display = 'none';
-    document.body.appendChild(contEl);
+    (rootEl || document.body).appendChild(contEl);
   }
 }
 
-function appendToHistoryGraph(historyObj, newItem) {
+function appendToHistoryGraph(newItem) {
   var id = 'vizone-'+historyCount;
 
   var el = document.createElement('pre');

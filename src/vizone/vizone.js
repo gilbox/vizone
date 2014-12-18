@@ -62,7 +62,7 @@ function vizone(fn, newItem, parentItem, forceRoot) {
   newItem.$$$index = historyObj.items.length;
   historyObj.items.push(newItem);
 
-  vizoneDOM.appendToHistoryGraph(historyObj, newItem);
+  vizoneDOM.appendToHistoryGraph(newItem);
 
   if (fn) {
     var r,

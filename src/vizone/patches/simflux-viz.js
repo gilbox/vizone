@@ -28,7 +28,7 @@ var simfluxViz = function () {
     dispatcher.history = [];
   }
 
-  function patchStore(dispatcher, store) {
+  function patchStore(store) {
     store.$$$stackInfo = parseStackLine2(store.$$$stack, '[store]');
     for (var a in store) {
       if (store.hasOwnProperty(a) && typeof store[a] === 'function') {
@@ -64,7 +64,7 @@ var simfluxViz = function () {
     };
   }
 
-  function patchActionCreator(dispatcher, ac) {
+  function patchActionCreator(ac) {
     ac.$$$stackInfo = parseStackLine2(ac.$$$stack, '[actionCreator]');
     for (var a in ac) {
       if (ac.hasOwnProperty(a) && typeof ac[a] === 'function') {
@@ -110,12 +110,12 @@ var simfluxViz = function () {
 
     // monkey patch stores
     dispatcher.stores.forEach(function (store) {
-      patchStore(dispatcher, store);
+      patchStore(store);
     });
 
     // monkey patch action creators
     dispatcher.actionCreators.forEach(function (ac) {
-      patchActionCreator(dispatcher, ac);
+      patchActionCreator(ac);
     });
 
   });

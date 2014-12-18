@@ -661,7 +661,7 @@ var simfluxViz = function () {
     dispatcher.history = [];
   }
 
-  function patchStore(dispatcher, store) {
+  function patchStore(store) {
     store.$$$stackInfo = parseStackLine2(store.$$$stack, '[store]');
     for (var a in store) {
       if (store.hasOwnProperty(a) && typeof store[a] === 'function') {
@@ -697,7 +697,7 @@ var simfluxViz = function () {
     };
   }
 
-  function patchActionCreator(dispatcher, ac) {
+  function patchActionCreator(ac) {
     ac.$$$stackInfo = parseStackLine2(ac.$$$stack, '[actionCreator]');
     for (var a in ac) {
       if (ac.hasOwnProperty(a) && typeof ac[a] === 'function') {
@@ -743,12 +743,12 @@ var simfluxViz = function () {
 
     // monkey patch stores
     dispatcher.stores.forEach(function (store) {
-      patchStore(dispatcher, store);
+      patchStore(store);
     });
 
     // monkey patch action creators
     dispatcher.actionCreators.forEach(function (ac) {
-      patchActionCreator(dispatcher, ac);
+      patchActionCreator(ac);
     });
 
   });
@@ -795,16 +795,16 @@ simfluxViz();
 
 var contEl, historyMax = 1000, historyCount = 0;
 
-function initHistoryGraph() {
+function initHistoryGraph(rootEl) {
   if (!contEl) {
     contEl = document.createElement("div");
     contEl.id = "vizone";
     contEl.style.display = 'none';
-    document.body.appendChild(contEl);
+    (rootEl || document.body).appendChild(contEl);
   }
 }
 
-function appendToHistoryGraph(historyObj, newItem) {
+function appendToHistoryGraph(newItem) {
   var id = 'vizone-'+historyCount;
 
   var el = document.createElement('pre');
@@ -892,7 +892,7 @@ function vizone(fn, newItem, parentItem, forceRoot) {
   newItem.$$$index = historyObj.items.length;
   historyObj.items.push(newItem);
 
-  vizoneDOM.appendToHistoryGraph(historyObj, newItem);
+  vizoneDOM.appendToHistoryGraph(newItem);
 
   if (fn) {
     var r,

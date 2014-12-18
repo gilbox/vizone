@@ -641,8 +641,6 @@ var vizone = require('./../vizone');
 
 var simfluxViz = function () {
 
-  simflux.history = [];
-
   // make sure simflux is attached to window since by default it doesn't have to be
   window.simflux = simflux;
 
@@ -655,11 +653,6 @@ var simfluxViz = function () {
   //  // use console.error to get a proper stack trace
   //  console.error.apply(console, args);
   //}
-
-
-  function patchDispatcher(dispatcher) {
-    dispatcher.history = [];
-  }
 
   function patchStore(store) {
     store.$$$stackInfo = parseStackLine2(store.$$$stack, '[store]');
@@ -739,8 +732,6 @@ var simfluxViz = function () {
   // when simflux-viz is loaded, immediately patch any existing
   // dispatchers, stores, and action creators
   simflux.dispatchers.forEach(function (dispatcher) {
-    patchDispatcher(dispatcher);
-
     // monkey patch stores
     dispatcher.stores.forEach(function (store) {
       patchStore(store);
@@ -777,13 +768,6 @@ var simfluxViz = function () {
     var r = oregisterStore.apply(this, Array.prototype.slice.call(arguments, 0));
     patchStore(this, store);
     return r;
-  };
-
-  var oinstantiateDispatcher = simflux.instantiateDispatcher;
-  simflux.instantiateDispatcher = function(name) {
-    var d = oinstantiateDispatcher.apply(this, Array.prototype.slice.call(arguments, 0));
-    patchDispatcher(d);
-    return d;
   };
 
   console.log("%csimflux-viz loaded", "color:white; background-color:orange; font-size: 14pt; border-radius:8px; padding: 0 10px; font-family:Verdana;");

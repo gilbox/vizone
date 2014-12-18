@@ -11,7 +11,11 @@ var Node = React.createClass({
     var args = this.props.node.args ? argsToDOM(this.props.node.args) : null;
 
     return (
-      <div className="Node-node">{title} {subtitle} {args}</div>
+      <div className="Node-node">
+        {title}
+        {subtitle}
+        {args}
+      </div>
     );
   }
 });

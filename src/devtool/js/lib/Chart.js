@@ -97,7 +97,7 @@ Chart.prototype.renderChart = function(nodes) {
     w = svgEl.clientWidth;
 
   zoom
-    .translate([(w - g.graph().width * initialScale) / 2, 20])
+    .translate([(w - g.graph().width * initialScale) / 2, 40])
     .scale(initialScale)
     .event(svg);
   //svg.attr('height', g.graph().height * initialScale + 40);

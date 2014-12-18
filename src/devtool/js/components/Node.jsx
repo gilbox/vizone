@@ -35,7 +35,7 @@ function argsToDOM(args) {
             <span className="Node-argObjectVal">{v}</span>
           </div>
         );
-        if (++count >= MAX_OBJECT_COUNT && total > MAX_OBJECT_COUNT+1) {
+        if (++count >= MAX_OBJECT_COUNT-1 && total > MAX_OBJECT_COUNT) {
           ro.push(
             <div className="Node-argObjectEllipses" />
           );

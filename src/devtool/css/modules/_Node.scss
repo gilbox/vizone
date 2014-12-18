@@ -41,6 +41,15 @@
   }
 }
 
+.Node-argObjectEllipses {
+  line-height: 8px;
+  font-size: 14px;
+
+  &:before {
+    content: "...";
+  }
+}
+
 .Node--action {
   margin:0;
 

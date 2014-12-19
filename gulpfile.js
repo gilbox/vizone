@@ -14,6 +14,16 @@ gulp.task('devtool-sass', [], function() {
     .pipe(gulp.dest('./devtool/'));
 });
 
+gulp.task('build-simflux', [], function () {
+  return browserify('./src/vizone/patches/simflux-viz.js')
+    .external('simflux')
+    .bundle()
+    .pipe(source('simflux-viz-bundle.js'))
+    .pipe(gulp.dest('./dist'))
+    .pipe(gulp.dest('./demo-gauntlet'))
+    .pipe(gulp.dest('./demo'));
+});
+
 gulp.task('build1', [], function () {
 
   // packaged without zone.js
@@ -93,7 +103,7 @@ gulp.task('build-gauntlet', ['build', 'build-devtool'], function () {
 });
 
 gulp.task('watch', ['default'], function() {
-  gulp.watch('./**/*', ['build', 'build-devtool']);
+  gulp.watch('./**/*', ['build', 'build-simflux', 'build-devtool']);
 });
 
-gulp.task('default', ['build', 'build-devtool']);
+gulp.task('default', ['build', 'build-simflux', 'build-devtool']);

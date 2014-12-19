@@ -624,161 +624,15 @@ Zone.init();
 })();
 }
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-
-// patches should require vizone.js
-// patches should fail silently if their host frameworks are missing
-// patches should announce load success by printing colorful message to the console
-
-require('./patches/simflux-viz');
-},{"./patches/simflux-viz":2}],2:[function(require,module,exports){
-if (window.simflux && window.simflux.history) return;  // prevent double-loading
-
-var simflux = window.simflux || (typeof simflux !== 'undefined' ? simflux : (require.isDefined('simflux') && require('simflux')));
-
-if (!simflux) return; // fail silently
-
-var vizone = require('./../vizone');
-
-var simfluxViz = function () {
-
-  // make sure simflux is attached to window since by default it doesn't have to be
-  window.simflux = simflux;
-
-  //function warn() {
-  //  var args = [
-  //    '%c' + arguments[0],
-  //    'color:darkorange'
-  //  ].concat(Array.prototype.slice.call(arguments, 1));
-  //
-  //  // use console.error to get a proper stack trace
-  //  console.error.apply(console, args);
-  //}
-
-  function patchStore(store) {
-    store.$$$stackInfo = parseStackLine2(store.$$$stack, '[store]');
-    for (var a in store) {
-      if (store.hasOwnProperty(a) && typeof store[a] === 'function') {
-        (function(a, fn) {
-          store[a] = function() {
-            return vizone(
-              Function.apply.bind(fn, this, Array.prototype.slice.call(arguments, 0)),
-              {
-                title: store.storeName,
-                subtitle: a,
-                class: 'Node--store',
-                sourceLink: {
-                  label: store.storeName,
-                  url: store.$$$stackInfo.location
-                }
-              }
-            );
-          };
-        })(a, store[a]);
-      }
-    }
-  }
-
-  function parseStackLine2(stack, defaultFnName) {
-
-    var stackInfo = stack.match(/\n.+\n\s+at\s+(.+)\n/);
-    stackInfo = stackInfo.length>1 ? stackInfo[1] : defaultFnName;
-    stackInfo = stackInfo.match(/^(.+)\((.+)\)$/);
-
-    return {
-      fnName: stackInfo.length>1 ? stackInfo[1].trim() : defaultFnName,
-      location: stackInfo.length>2 ? stackInfo[2] : ''
-    };
-  }
-
-  function patchActionCreator(ac) {
-    ac.$$$stackInfo = parseStackLine2(ac.$$$stack, '[actionCreator]');
-    for (var a in ac) {
-      if (ac.hasOwnProperty(a) && typeof ac[a] === 'function') {
-        (function(pa, fn) {
-          ac[pa] = function() {
-
-            var stack = new Error().stack;
-            //console.log("-->stack: ", stack);
-            var viewInfo = parseStackLine2(stack, '[view]'),
-                args = Array.prototype.slice.call(arguments, 0),
-                acName = (ac.name || '[Action Creator]');
-
-            var historyObj = {
-              title: acName + '.<b>' + pa + '</b>',
-              args: args,
-              sourceLink: {
-                label: acName,
-                url: ac.$$$stackInfo.location
-              },
-              class: 'Node--actionCreator'
-            };
-
-            var parentObj = {
-              title: viewInfo.fnName,
-              sourceLink: {
-                label: viewInfo.fnName,
-                url: viewInfo.location
-              },
-              class: 'Node--actionOriginator'
-            };
-
-            return vizone(Function.apply.bind(fn, this, args), historyObj, parentObj);
-          };
-        })(a, ac[a]);
-      }
-    }
-  }
-
-  // when simflux-viz is loaded, immediately patch any existing
-  // dispatchers, stores, and action creators
-  simflux.dispatchers.forEach(function (dispatcher) {
-    // monkey patch stores
-    dispatcher.stores.forEach(function (store) {
-      patchStore(store);
-    });
-
-    // monkey patch action creators
-    dispatcher.actionCreators.forEach(function (ac) {
-      patchActionCreator(ac);
-    });
-
-  });
-
-  var odispatch = simflux.Dispatcher.prototype.dispatch;
-  simflux.Dispatcher.prototype.dispatch = function(action) {
-    return vizone(
-      Function.apply.bind(odispatch, this, Array.prototype.slice.call(arguments, 0)),
-      {
-        title: action,
-        args: Array.prototype.slice.call(arguments, 1),
-        class: 'Node--action'
-      }
-    );
-  };
-
-  var oregisterActionCreator = simflux.Dispatcher.prototype.registerActionCreator;
-  simflux.Dispatcher.prototype.registerActionCreator = function(ac) {
-    var r = oregisterActionCreator.apply(this, Array.prototype.slice.call(arguments, 0));
-    patchActionCreator(this, ac);
-    return r;
-  };
-
-  var oregisterStore = simflux.Dispatcher.prototype.registerStore;
-  simflux.Dispatcher.prototype.registerStore = function(store) {
-    var r = oregisterStore.apply(this, Array.prototype.slice.call(arguments, 0));
-    patchStore(this, store);
-    return r;
-  };
-
-  console.log("%csimflux-viz loaded", "color:white; background-color:orange; font-size: 14pt; border-radius:8px; padding: 0 10px; font-family:Verdana;");
-};
-
-simfluxViz();
-},{"./../vizone":4,"simflux":"simflux"}],3:[function(require,module,exports){
+window.vizone = require('./vizone');
+},{"./vizone":3}],2:[function(require,module,exports){
 'use strict';
 
 var contEl, historyMax = 1000, historyCount = 0;
 
+// create a div that will house all
+// elements for vizone communication
+// with the devtool
 function initHistoryGraph(rootEl) {
   if (!contEl) {
     contEl = document.createElement("div");
@@ -788,6 +642,20 @@ function initHistoryGraph(rootEl) {
   }
 }
 
+// every item represents an application
+// flow occurrence (usually a function call)
+//
+// Items are added to div#vizone.
+//
+// bridge.js is responsible for removing an item
+// as soon as it has been parsed and sent
+// to the chart visualization tool
+//
+// We also handle automatically removing the
+// oldest item if the list gets too long but
+// if it comes to this then something has probably
+// gone wrong because all items should be removed
+// by bridge.js immediately after they are added
 function appendToHistoryGraph(newItem) {
   var id = 'vizone-'+historyCount;
 
@@ -811,7 +679,7 @@ module.exports = {
   appendToHistoryGraph: appendToHistoryGraph,
   initHistoryGraph: initHistoryGraph
 };
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 var vizoneDOM = require('./vizone-dom');
 
 vizoneDOM.initHistoryGraph();
@@ -839,16 +707,27 @@ vizoneDOM.initHistoryGraph();
 // Note that if parentItem is supplied, then it will be the root,
 // and newItem will be the only child of parentItem.
 function vizone(fn, newItem, parentItem, forceRoot) {
+
+  // abbreviate args because we might expect args to be passed
+  // along willy-nilly (like vizone.patch does)
+  if (newItem.args) newItem.args = abbreviateArray(newItem.args);
+
   if (parentItem) {
     return vizone(vizone.bind(null, fn, newItem), parentItem);
   }
 
+  // this might not be necessary
   var zone = window.zone;
 
+  // If the current zone already has a historyObj, we need
+  // to create a new zone to force this item to be root
   if (forceRoot && zone.historyObj) {
-    zone.fork().run(vizone.bind(null, fn, parentItem, newItem));
+    return zone.fork().run(vizone.bind(null, fn, parentItem, newItem));
   }
 
+  // right now historyObj is just responsible for keeping
+  // track of items. If there isn't a historyObj attached to the
+  // current zone, create it now
   var historyObj = zone.historyObj || {
         items: []
       };
@@ -880,7 +759,7 @@ function vizone(fn, newItem, parentItem, forceRoot) {
 
   if (fn) {
     var r,
-      fz = window.zone.fork();
+        fz = window.zone.fork();
 
     fz.run(function() {
       fz.historyObj = historyObj;
@@ -892,5 +771,76 @@ function vizone(fn, newItem, parentItem, forceRoot) {
   }
 }
 
+// maximum string length for property value
+var MAX_STRING_LEN = 30;
+
+// maximum number of properties an object may have
+var MAX_OBJECT_PROPS = 30;
+
+// objects that should always be converted directly toString()
+var directlyAbbreviateObjects = {
+  Date: true
+};
+
+// Converts anything to a scalar value
+function abbreviateVal(v) {
+  var t = typeof v;
+
+  if (t === 'string') {
+    return v.substr(0, MAX_STRING_LEN);
+  } else if (t === 'number') {
+    return v;
+  } else if (v instanceof Object && 'toString' in v) {
+    return v.toString().substr(0,MAX_STRING_LEN);
+  } else {
+    return '[' + t + ']';
+  }
+}
+
+// Makes a simplified copy of the array,
+// removing any nesting and converting to
+// string when possible (except for numbers)
+function abbreviateArray(arr) {
+  return arr.map(function (v) {
+    if (v instanceof Object && ! directlyAbbreviateObjects[v.constructor.name]) {
+      var newv = {}, count = 0;
+      for (var k in v) {
+        if (v.hasOwnProperty(k)) newv[k] = abbreviateVal(v[k]); // @todo: handle elipses
+        if (++count > MAX_OBJECT_PROPS) break;
+      }
+      return newv;
+    } else {
+      return abbreviateVal(v);
+    }
+  });
+}
+
+// Allows you to quickly patch a function without too much
+// effort, but offers less power and control than using the
+// vizone function directly.
+//
+// @param obj (Object) name of the object
+// @param key (String) where obj[key] is the function you
+//                     want to track
+// @param options (Object) this corresponds to the newItem param of the
+//                         vizone function, however args will be filled
+//                         in for you automatically
+vizone.patch = function (obj, key, options) {
+  var ofn = obj[key];
+
+  options = options || {};
+  options.title = options.title || key;
+
+  obj[key] = function() {
+    var args = Array.prototype.slice.call(arguments, 0);
+    options.args = args;
+
+    return vizone(
+      Function.apply.bind(ofn, obj, args),
+      options
+    );
+  };
+};
+
 module.exports = vizone;
-},{"./vizone-dom":3}]},{},[1]);
+},{"./vizone-dom":2}]},{},[1]);

@@ -1,5 +1,6 @@
 node_modules/
 demo/vizone-bundle.js
+demo/simflux-viz-bundle.js
 tmp/
 devtool/bridge.js
 devtool/panel.js
@@ -10,4 +11,5 @@ dist/*.zip
 devtool/**/*
 demo-gauntlet/app.js
 demo-gauntlet/vizone-bundle.js
+demo-gauntlet/simflux-viz-bundle.js
 .sass-cache/

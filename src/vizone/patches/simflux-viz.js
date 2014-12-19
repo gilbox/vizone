@@ -1,10 +1,10 @@
 if (window.simflux && window.simflux.history) return;  // prevent double-loading
 
-var simflux = window.simflux || (typeof simflux !== 'undefined' ? simflux : (require.isDefined('simflux') && require('simflux')));
+var simflux = window.simflux || (typeof simflux !== 'undefined' ? simflux : (require && require.defined && require.defined('simflux') && require('simflux')));
 
 if (!simflux) return; // fail silently
 
-var vizone = require('./../vizone');
+var vizone = window.vizone;
 
 var simfluxViz = function () {
 

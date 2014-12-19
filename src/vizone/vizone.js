@@ -25,16 +25,27 @@ vizoneDOM.initHistoryGraph();
 // Note that if parentItem is supplied, then it will be the root,
 // and newItem will be the only child of parentItem.
 function vizone(fn, newItem, parentItem, forceRoot) {
+
+  // abbreviate args because we might expect args to be passed
+  // along willy-nilly (like vizone.patch does)
+  if (newItem.args) newItem.args = abbreviateArray(newItem.args);
+
   if (parentItem) {
     return vizone(vizone.bind(null, fn, newItem), parentItem);
   }
 
+  // this might not be necessary
   var zone = window.zone;
 
+  // If the current zone already has a historyObj, we need
+  // to create a new zone to force this item to be root
   if (forceRoot && zone.historyObj) {
-    zone.fork().run(vizone.bind(null, fn, parentItem, newItem));
+    return zone.fork().run(vizone.bind(null, fn, parentItem, newItem));
   }
 
+  // right now historyObj is just responsible for keeping
+  // track of items. If there isn't a historyObj attached to the
+  // current zone, create it now
   var historyObj = zone.historyObj || {
         items: []
       };
@@ -66,7 +77,7 @@ function vizone(fn, newItem, parentItem, forceRoot) {
 
   if (fn) {
     var r,
-      fz = window.zone.fork();
+        fz = window.zone.fork();
 
     fz.run(function() {
       fz.historyObj = historyObj;
@@ -77,5 +88,76 @@ function vizone(fn, newItem, parentItem, forceRoot) {
     return r;
   }
 }
+
+// maximum string length for property value
+var MAX_STRING_LEN = 30;
+
+// maximum number of properties an object may have
+var MAX_OBJECT_PROPS = 30;
+
+// objects that should always be converted directly toString()
+var directlyAbbreviateObjects = {
+  Date: true
+};
+
+// Converts anything to a scalar value
+function abbreviateVal(v) {
+  var t = typeof v;
+
+  if (t === 'string') {
+    return v.substr(0, MAX_STRING_LEN);
+  } else if (t === 'number') {
+    return v;
+  } else if (v instanceof Object && 'toString' in v) {
+    return v.toString().substr(0,MAX_STRING_LEN);
+  } else {
+    return '[' + t + ']';
+  }
+}
+
+// Makes a simplified copy of the array,
+// removing any nesting and converting to
+// string when possible (except for numbers)
+function abbreviateArray(arr) {
+  return arr.map(function (v) {
+    if (v instanceof Object && ! directlyAbbreviateObjects[v.constructor.name]) {
+      var newv = {}, count = 0;
+      for (var k in v) {
+        if (v.hasOwnProperty(k)) newv[k] = abbreviateVal(v[k]); // @todo: handle elipses
+        if (++count > MAX_OBJECT_PROPS) break;
+      }
+      return newv;
+    } else {
+      return abbreviateVal(v);
+    }
+  });
+}
+
+// Allows you to quickly patch a function without too much
+// effort, but offers less power and control than using the
+// vizone function directly.
+//
+// @param obj (Object) name of the object
+// @param key (String) where obj[key] is the function you
+//                     want to track
+// @param options (Object) this corresponds to the newItem param of the
+//                         vizone function, however args will be filled
+//                         in for you automatically
+vizone.patch = function (obj, key, options) {
+  var ofn = obj[key];
+
+  options = options || {};
+  options.title = options.title || key;
+
+  obj[key] = function() {
+    var args = Array.prototype.slice.call(arguments, 0);
+    options.args = args;
+
+    return vizone(
+      Function.apply.bind(ofn, obj, args),
+      options
+    );
+  };
+};
 
 module.exports = vizone;

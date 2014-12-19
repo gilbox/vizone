@@ -22,7 +22,7 @@ var Node = React.createClass({
 
 function argsToDOM(args) {
   var r = [],
-      MAX_OBJECT_COUNT = 3;
+      MAX_OBJECT_COUNT = 5;
 
   args.forEach(function (arg, i) {
     if (typeof arg === 'object') {

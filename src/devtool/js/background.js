@@ -5,13 +5,31 @@
 // chrome.tabs.*
 // chrome.extension.*
 
+// set custom scripts via the console (can be done in the background page console):
+//localStorage.setItem('vizone-scripts', JSON.stringify([
+//  "http://localhost:3101/demo/vizone-bundle.js",
+//  "http://localhost:3101/demo/simflux-viz-bundle.js"
+//]));
+
+// add default scripts to localStorage if it's empty
+
+var defaultScripts = [
+  "https://rawgit.com/gilbox/simflux-viz/master/dist/vizone-bundle.js",
+  "https://rawgit.com/gilbox/simflux-viz/master/dist/simflux-viz-bundle.js"
+];
+
+var scripts = JSON.parse(localStorage.getItem('vizone-scripts'));
+if (! scripts instanceof Array || ! scripts.length) {
+  localStorage.setItem('vizone-scripts', JSON.stringify(defaultScripts));
+}
+
 chrome.extension.onConnect.addListener(function(port) {
 
   // @todo: use this instead of chrome.webNavigation.onCompleted ?
   //chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
   //  if (changeInfo.status === 'complete') {
   //    console.log("chrome.tabs.onUpdated!!!!!!!");
-  //    //chrome.tabs.executeScript(chrome.devtools.inspectedWindow.tabId, {file: "bridge.js"});
+  //    //chro  me.tabs.executeScript(chrome.devtools.inspectedWindow.tabId, {file: "bridge.js"});
   //  }
   //});
 
@@ -23,7 +41,8 @@ chrome.extension.onConnect.addListener(function(port) {
       });
 
       // @todo: there must be a better way to determine the tabId from bridge.js ?!
-      chrome.tabs.executeScript(details.tabId, {code: "window.simfluxTabId="+details.tabId+";"});
+      chrome.tabs.executeScript(details.tabId, {code: "window.vizoneTabId="+details.tabId+";"});
+      chrome.tabs.executeScript(details.tabId, {code: "window.vizoneScripts='"+localStorage.getItem('vizone-scripts')+"';"});
 
       chrome.tabs.executeScript(details.tabId, {file: "js/bridge.js"});
     }

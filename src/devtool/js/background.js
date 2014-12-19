@@ -14,8 +14,8 @@
 // add default scripts to localStorage if it's empty
 
 var defaultScripts = [
-  "https://rawgit.com/gilbox/simflux-viz/master/dist/vizone-bundle.js",
-  "https://rawgit.com/gilbox/simflux-viz/master/dist/simflux-viz-bundle.js"
+  "https://rawgit.com/gilbox/vizone/master/dist/vizone-bundle.js",
+  "https://rawgit.com/gilbox/vizone/master/dist/simflux-viz-bundle.js"
 ];
 
 var scripts = JSON.parse(localStorage.getItem('vizone-scripts'));

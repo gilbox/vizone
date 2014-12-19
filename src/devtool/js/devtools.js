@@ -7,7 +7,7 @@
 //        - injecting scripts?
 
 // Create a tab in the devtools area
-chrome.devtools.panels.create("simflux", "simflux.png", "panel.html", function(panel) {});
+chrome.devtools.panels.create("vizone", "vizone.png", "panel.html", function(panel) {});
 
 // @todo: we can intercept loading of simflux.js here... utilize this?
 //.devtools.inspectedWindow.onResourceAdded.addListener(function() {

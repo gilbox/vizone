@@ -6,7 +6,7 @@ Still in early stages of development, but fully functional.
 
 Here's what it looks like (it's more colorful now, this screenshot is old)...
 
-![screenshot](http://i.imgur.com/YtDsEcL.png)
+![screenshot](https://lh6.googleusercontent.com/dh3psZcxaajmkV-q3oR40t8oCiTTieJhkxmpMoMw7VXvhdyzEWWbuQ3Df8XW-Kk88IeK3IzqXg=s1280-h800-e365-rw)
 
 why?
 ====

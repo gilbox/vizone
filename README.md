@@ -56,6 +56,20 @@ You may use simflux-viz as an example for building your own patch. However, alth
 exclusively uses the `vizone` function to patch simflux, there is nothing stopping you from
 using the `vizone.patch` function which is a much simpler way to create a patch.
 
+**How easy is it to create a patch?**. You don't even have to *create* a patch to create a patch.
+Just [load up vizone](#install), then open the console and do:
+
+    vizone.patch(myObject, 'myFunction')
+
+That's it! Now the function `myObject.myFunction(..)` is patched and every time it is executed
+by your application, vizone will capture it as an application flow occurance and create a flow-chart
+node for that occurrence.
+
+(Of course if `myObject` is not available on `window` the above code won't
+work. In fact, getting access to the objects you need to patch is one of the main challenges of
+using vizone and the reason that `simflux` was designed with patching in mind and thus makes the `simflux`
+object available on `window`)
+
 Follow these guidelines when creating a patch:
 
 - patches should access the `vizone` and/or `vizone.patch` function via the `window` scope

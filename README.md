@@ -4,7 +4,7 @@ vizone
 Application-flow graphing.
 Still in early stages of development, but fully functional.
 
-Note that this project was currently called simflux-viz. However, it's name has
+Note that this project was previously called simflux-viz. However, it's name has
 changed to vizone and simflux-viz is a plugin for vizone. Some of this document
 still needs to be updated to reflect this change.
 

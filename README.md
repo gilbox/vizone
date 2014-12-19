@@ -4,10 +4,6 @@ vizone
 Application-flow graphing.
 Still in early stages of development, but fully functional.
 
-Note that this project was previously called simflux-viz. However, it's name has
-changed to vizone and simflux-viz is a plugin for vizone. Some of this document
-still needs to be updated to reflect this change.
-
 Here's what it looks like (it's more colorful now, this screenshot is old)...
 
 ![screenshot](http://i.imgur.com/YtDsEcL.png)
@@ -20,10 +16,12 @@ vizone flow charts can help developers quickly grasp the underpinnings of an app
 install
 =======
 
-- Go here: **[simflux visualization devtool in the Chrome Web Store](https://chrome.google.com/webstore/detail/simflux-visualization-dev/idfhbgmlikkpjkkfaeajolmofdkaoinb)**
+- Install the extension: **[vizone devtool in the Chrome Web Store](https://chrome.google.com/webstore/detail/vizone-devtool/idfhbgmlikkpjkkfaeajolmofdkaoinb)**
 - Open your page that you want to visualize
 - Open devtools and click `vizone` tab
-- Refresh the page, and you should see `simflux-viz loaded` in the console in orange (if using simflux)
+- Refresh the page, and you should see `vizone loaded` in the console in orange
+- If the page you refresh has a library with a corresponding patch loaded into vizone, you should
+  also see an orange console message for that library. If using simflux the message is `simflux-viz loaded`.
 - Now every time an action occurs in the application, you will see a flow chart generated in real time.
 
 usage: chrome extension

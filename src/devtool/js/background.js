@@ -7,8 +7,8 @@
 
 // set custom scripts via the console (can be done in the background page console):
 //localStorage.setItem('vizone-scripts', JSON.stringify([
-//  "http://localhost:3101/demo/vizone-bundle.js",
-//  "http://localhost:3101/demo/simflux-viz-bundle.js"
+//  "http://localhost:3101/dist/vizone-bundle.js",
+//  "http://localhost:3101/dist/simflux-viz-bundle.js"
 //]));
 
 // add default scripts to localStorage if it's empty
@@ -19,7 +19,7 @@ var defaultScripts = [
 ];
 
 var scripts = JSON.parse(localStorage.getItem('vizone-scripts'));
-if (! scripts instanceof Array || ! scripts.length) {
+if (! (scripts instanceof Array) || ((scripts instanceof Array) && ! scripts.length)) {
   localStorage.setItem('vizone-scripts', JSON.stringify(defaultScripts));
 }
 

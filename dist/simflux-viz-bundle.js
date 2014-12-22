@@ -1,5 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-if (window.simflux && window.simflux.history) return;  // prevent double-loading
+if (window.simflux && window.simflux.simfluxVizLoaded) return;  // prevent double-loading
+window.simflux.simfluxVizLoaded = true;
 
 var simflux = window.simflux || (typeof simflux !== 'undefined' ? simflux : (require && require.defined && require.defined('simflux') && require('simflux')));
 
@@ -127,14 +128,14 @@ var simfluxViz = function () {
   var oregisterActionCreator = simflux.Dispatcher.prototype.registerActionCreator;
   simflux.Dispatcher.prototype.registerActionCreator = function(ac) {
     var r = oregisterActionCreator.apply(this, Array.prototype.slice.call(arguments, 0));
-    patchActionCreator(this, ac);
+    patchActionCreator(ac);
     return r;
   };
 
   var oregisterStore = simflux.Dispatcher.prototype.registerStore;
   simflux.Dispatcher.prototype.registerStore = function(store) {
     var r = oregisterStore.apply(this, Array.prototype.slice.call(arguments, 0));
-    patchStore(this, store);
+    patchStore(store);
     return r;
   };
 

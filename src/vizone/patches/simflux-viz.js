@@ -1,4 +1,5 @@
-if (window.simflux && window.simflux.history) return;  // prevent double-loading
+if (window.simflux && window.simflux.simfluxVizLoaded) return;  // prevent double-loading
+window.simflux.simfluxVizLoaded = true;
 
 var simflux = window.simflux || (typeof simflux !== 'undefined' ? simflux : (require && require.defined && require.defined('simflux') && require('simflux')));
 
@@ -126,14 +127,14 @@ var simfluxViz = function () {
   var oregisterActionCreator = simflux.Dispatcher.prototype.registerActionCreator;
   simflux.Dispatcher.prototype.registerActionCreator = function(ac) {
     var r = oregisterActionCreator.apply(this, Array.prototype.slice.call(arguments, 0));
-    patchActionCreator(this, ac);
+    patchActionCreator(ac);
     return r;
   };
 
   var oregisterStore = simflux.Dispatcher.prototype.registerStore;
   simflux.Dispatcher.prototype.registerStore = function(store) {
     var r = oregisterStore.apply(this, Array.prototype.slice.call(arguments, 0));
-    patchStore(this, store);
+    patchStore(store);
     return r;
   };
 

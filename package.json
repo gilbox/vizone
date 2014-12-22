@@ -1,14 +1,14 @@
 {
-  "name": "simflux-viz",
-  "version": "0.0.2",
-  "description": "Application-flow graphing for simflux",
-  "main": "simflux-viz.js",
+  "name": "vizone",
+  "version": "0.0.0.10",
+  "description": "Application-flow graphing",
+  "main": "dist/vizone-bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gilbox/simflux.git"
+    "url": "https://github.com/gilbox/vizone.git"
   },
   "keywords": [
     "flux"
@@ -16,9 +16,9 @@
   "author": "Gil Birman",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gilbox/simflux/issues"
+    "url": "https://github.com/gilbox/vizone/issues"
   },
-  "homepage": "https://github.com/gilbox/simflux",
+  "homepage": "https://github.com/gilbox/vizone",
   "dependencies": {
     "browserify": "^6.3.3",
     "d3": "^3.4.13",

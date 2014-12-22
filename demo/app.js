@@ -6,7 +6,7 @@ app.filter('jpg', function() {
   }
 });
 
-app.constant('dispatcher', simflux.instantiateDispatcher());
+app.constant('dispatcher', new simflux.Dispatcher());
 
 app.factory('appStore', function appStore(dispatcher) {
   var goodTags = ['happy','sad','angry','confused','glasses','troll','cute','child','creepy','stoned','stupid','alone','girl','man','scared','cry','lol','crazy','fuck','celebrity','smile','japanese','cool','clean','sexy'];

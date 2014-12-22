@@ -714,12 +714,11 @@ function vizone(fn, newItem, parentItem, forceRoot) {
   // along willy-nilly (like vizone.patch does)
   if (newItem.args) newItem.args = abbreviateArray(newItem.args);
 
+  // inserting a parent item involves creating two separate
+  // vizone calls
   if (parentItem) {
-    return vizone(vizone.bind(null, fn, newItem), parentItem);
+    return vizone(vizone.bind(null, fn, newItem), parentItem, undefined, forceRoot);
   }
-
-  // this might not be necessary
-  var zone = window.zone;
 
   // If the current zone already has a historyObj, we need
   // to create a new zone to force this item to be root
@@ -760,16 +759,14 @@ function vizone(fn, newItem, parentItem, forceRoot) {
   vizoneDOM.appendToHistoryGraph(newItem);
 
   if (fn) {
-    var r,
-        fz = window.zone.fork();
+    var fz = zone.fork();
 
-    fz.run(function() {
-      fz.historyObj = historyObj;
-      fz.historyItem = newItem;
-      r = fn(); // this runs synchronously so r is always returned below
-    });
+    fz.historyObj = historyObj;
+    fz.historyItem = newItem;
 
-    return r;
+    // fn is executed within the forked zone...
+    // and this will return the result of fn()
+    return fz.run(fn);
   }
 }
 

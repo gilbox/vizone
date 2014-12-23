@@ -1,9 +1,9 @@
-if (window.simflux && window.simflux.simfluxVizLoaded) return;  // prevent double-loading
-window.simflux.simfluxVizLoaded = true;
-
 var simflux = window.simflux || (typeof simflux !== 'undefined' ? simflux : (require && require.defined && require.defined('simflux') && require('simflux')));
 
 if (!simflux) return; // fail silently
+
+if (window.simflux && window.simflux.simfluxVizLoaded) return;  // prevent double-loading
+window.simflux.simfluxVizLoaded = true;
 
 var vizone = window.vizone;
 

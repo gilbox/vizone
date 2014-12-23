@@ -3,8 +3,8 @@ var simflux = window.simflux || (typeof simflux !== 'undefined' ? simflux : (req
 
 if (!simflux) return; // fail silently
 
-if (window.simflux && window.simflux.simfluxVizLoaded) return;  // prevent double-loading
-window.simflux.simfluxVizLoaded = true;
+if (simflux && simflux.simfluxVizLoaded) return;  // prevent double-loading
+simflux.simfluxVizLoaded = true;
 
 var vizone = window.vizone;
 

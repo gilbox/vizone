@@ -12,7 +12,8 @@ var ctx = Morearty.createContext(Immutable.fromJS({
     count: 0
   },
   currentChart: null,
-  currentChartIndex: 0
+  currentChartIndex: 0,
+  vizoneEnabled: false
 }));
 
 module.exports = ctx;

@@ -34,27 +34,27 @@ function argsToDOM(args) {
       for (var k in arg) {
         var v = arg[k];
         ro.push(
-          <div className="Node-argObjectItem">
+          <div key={k} className="Node-argObjectItem">
             <span className="Node-argObjectKey">{k}</span>
             <span className="Node-argObjectVal">{v}</span>
           </div>
         );
         if (++count >= MAX_OBJECT_COUNT-1 && total > MAX_OBJECT_COUNT) {
           ro.push(
-            <div className="Node-argObjectEllipses" />
+            <div key={count} className="Node-argObjectEllipses" />
           );
           break;
         }
       }
 
       r.push(
-        <div  className={'Node-arg'+i+' Node-arg Node-arg--object'}>{ro}</div>
+        <div key={i} className={'Node-arg'+i+' Node-arg Node-arg--object'}>{ro}</div>
       )
 
     } else {
 
       r.push(
-        <div  className={'Node-arg'+i+' Node-arg'}>{arg}</div>
+        <div key={i} className={'Node-arg'+i+' Node-arg'}>{arg}</div>
       );
 
     }

@@ -24,7 +24,6 @@ if (! (scripts instanceof Array) || ((scripts instanceof Array) && ! scripts.len
 }
 
 chrome.extension.onConnect.addListener(function(port) {
-
   // @todo: use this instead of chrome.webNavigation.onCompleted ?
   //chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
   //  if (changeInfo.status === 'complete') {
@@ -79,13 +78,13 @@ chrome.extension.onConnect.addListener(function(port) {
     chrome.extension.onMessage.removeListener(extensionListener);
   });
 
+  port.onMessage.addListener(function(o) {
+    // message from panel: pass-through to bridge
+    chrome.tabs.sendMessage(o.tabId, o);
+  });
+
   // port.onMessage.addListener(function (message) {
   //   port.postMessage(message);
   // });
 
-});
-
-// @todo? remove this?
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  return true;
 });

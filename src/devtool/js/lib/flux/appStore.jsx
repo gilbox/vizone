@@ -3,14 +3,20 @@
 var simflux = require('simflux'),
     Immutable = require('immutable'),
     dispatcher = require('./dispatcher.jsx'),
-    ctx = require('./appContext.jsx');
+    ctx = require('./appContext.jsx'),
+    rootBinding = ctx.getBinding();
+
 
 var appStore = dispatcher.registerStore({
   storeName: 'App Store',
 
+  'init': function () {
+    var enabled = (localStorage.getItem('vizoneEnabled') === 'true');
+    rootBinding.set('vizoneEnabled', enabled);
+  },
+
   'click:timeline:dot': function (dot) {
-    var rootBinding = ctx.getBinding(),
-        index = dot.index,
+    var index = dot.index,
         historyBinding = rootBinding.get('history');
 
     rootBinding
@@ -19,8 +25,7 @@ var appStore = dispatcher.registerStore({
   },
 
   'process:chart:data': function (data) {
-    var rootBinding = ctx.getBinding(),
-        historyBinding = rootBinding.sub('history'),
+    var historyBinding = rootBinding.sub('history'),
         count = historyBinding.get('count'),
         currentChartIndex = rootBinding.get('currentChartIndex'),
         maxZoneIndex = count ? count-1 : 0,
@@ -49,6 +54,11 @@ var appStore = dispatcher.registerStore({
 
   'reset': function () {
     ctx.resetState();
+  },
+
+  'set:vizone:enabled': function (o) {
+    localStorage.setItem('vizoneEnabled', o.enabled.toString());
+    rootBinding.set('vizoneEnabled', o.enabled);
   }
 });
 

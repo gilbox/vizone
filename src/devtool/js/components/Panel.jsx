@@ -1,6 +1,7 @@
 var React = require('react'),
     Timeline = require('./Timeline.jsx'),
     FlowChart = require('./FlowChart.jsx'),
+    AppEnabler = require('./AppEnabler.jsx')
     flux = require('../lib/flux'),
     Morearty = require('morearty');
 
@@ -16,12 +17,20 @@ var Panel = React.createClass({
 
   render: function() {
     var binding = this.getDefaultBinding(),
-        chartBinding = binding.sub('currentChart');
+        chartBinding = binding.sub('currentChart'),
+        enabledBinding = binding.sub('vizoneEnabled'),
+        enabled = enabledBinding.get(),
+        enabledClass = enabled ? ' is-appEnabled' : '';
 
     return (
-      <div className="fill">
+      <div className={'Panel fill'+enabledClass}>
         <FlowChart binding={ chartBinding } />
+
         <Timeline binding={binding} />
+
+        <div className="Panel-appEnabler">
+          <AppEnabler binding={enabledBinding} />
+        </div>
       </div>
     )
   }

@@ -1,0 +1,23 @@
+// Panel component is container for charts, Timeline, AppEnabler
+.Panel {
+  background: $grey;
+  transition: .2s background;
+}
+
+
+.is-appEnabled.Panel {
+  background: transparent;
+}
+
+.Panel-appEnabler {
+  position: absolute;
+  z-index: 2;
+  right: 10px;
+  bottom: 10px;
+}
+
+:not(.is-appEnabled) .Panel-appEnabler {
+  box-shadow: 0 0 5px 5px white;
+  background: white;
+  border-radius: 5px;
+}

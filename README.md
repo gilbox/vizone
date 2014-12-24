@@ -17,7 +17,8 @@ install
 - Install the extension: **[vizone devtool in the Chrome Web Store](https://chrome.google.com/webstore/detail/vizone-devtool/idfhbgmlikkpjkkfaeajolmofdkaoinb)**
 - Open your page that you want to visualize
 - Open devtools and click `vizone` tab
-- Refresh the page, and you should see `vizone loaded` in the console in orange
+- If `vizone` is disabled, click the *enable* checkbox
+- You should see `vizone loaded` in the console in orange
 - If the page you refresh has a library with a corresponding patch loaded into vizone, you should
   also see an orange console message for that library. If using simflux the message is `simflux-viz loaded`.
 - Now every time an action occurs in the application, you will see a flow chart generated in real time.
@@ -46,7 +47,7 @@ Otherwise, to work with the latest version from the repo, follow these steps:
 - Manually *Load unpacked extension* (chrome://extensions/) using this repo's `devtool/` dir in chrome.
 - Open your page which uses vizone
 - Open devtools and click `vizone` tab
-- Refresh the page
+- If `vizone` is disabled, click the *enable* checkbox
 - Now in the console you can access the `vizone` and `vizone.patch` functions
 
 creating patches (vizone plugins)
@@ -118,7 +119,8 @@ simflux-viz: developing
   include `simflux-viz-bundle.js` it will be loaded on-the-fly directly from *rawgit*.
 - Open your page which uses vizone
 - Open devtools and click `vizone` tab
-- Refresh the page, and you should see `simflux-viz loaded` in the console in orange
+- If `vizone` is disabled, click the *enable* checkbox
+- You should see `simflux-viz loaded` in the console in orange
 - Now every time an action occurs in the application, you will see a flow chart generated in real time.
 
 simflux-viz: setup

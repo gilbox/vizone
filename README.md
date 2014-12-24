@@ -21,8 +21,8 @@ install
 - Open devtools and click `vizone` tab
 - If `vizone` is disabled, click the *enable* checkbox
 - You should see `vizone loaded` in the console in orange
-- If the page you refresh has a library with a corresponding patch loaded into vizone, you should
-  also see an orange console message for that library. If using simflux the message is `simflux-viz loaded`.
+- If the webpage has a library with a corresponding patch loaded into vizone, you should
+  also see an orange console message for that library. (If using simflux the message is `simflux-viz loaded`.)
 - Now every time an action occurs in the application, you will see a flow chart generated in real time.
 
 usage: chrome extension

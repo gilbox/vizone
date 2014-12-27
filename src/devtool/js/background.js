@@ -78,9 +78,17 @@ chrome.extension.onConnect.addListener(function(port) {
     chrome.extension.onMessage.removeListener(extensionListener);
   });
 
-  port.onMessage.addListener(function(o) {
-    // message from panel: pass-through to bridge
-    chrome.tabs.sendMessage(o.tabId, o);
+  port.onMessage.addListener(function(o,port) {
+    if (o.type === 'init-vizone') {
+      chrome.extension.sendMessage({
+        tabId: o.tabId,
+        title: port.sender.tab.title,
+        type: 'vizone-reset'
+      });
+    } else {
+      // message from panel: pass-through to bridge
+      chrome.tabs.sendMessage(o.tabId, o);
+    }
   });
 
   // port.onMessage.addListener(function (message) {

@@ -1,7 +1,7 @@
 var React = require('react'),
     Timeline = require('./Timeline.jsx'),
     FlowChart = require('./FlowChart.jsx'),
-    AppEnabler = require('./AppEnabler.jsx')
+    AppEnabler = require('./AppEnabler.jsx'),
     flux = require('../lib/flux'),
     Morearty = require('morearty');
 

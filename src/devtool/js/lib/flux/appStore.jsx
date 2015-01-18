@@ -57,7 +57,9 @@ var appStore = dispatcher.registerStore({
   },
 
   'reset': function () {
+    var vizoneEnabled = rootBinding.get('vizoneEnabled');
     ctx.resetState();
+    rootBinding.set('vizoneEnabled', vizoneEnabled); // @todo: this is janky
   },
 
   'set:vizone:enabled': function (o) {

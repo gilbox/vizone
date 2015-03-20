@@ -13,6 +13,11 @@ why?
 
 vizone flow charts can help developers quickly grasp the underpinnings of an application.
 
+how?
+====
+
+`vizone` uses **zone.js** in order to record application flow in real-time. When `vizone` patches any function, it is able to record all resulting function executions, including asynchronous events like `setTimeout` callbacks.
+
 install
 =======
 
@@ -138,8 +143,7 @@ simflux-viz: how?
 ====
 
 By combining **zone.js** with the predictability of Flux architecture we can easily abstract
-application flow. `simflux-viz` uses **zone.js** and monkey patches the `simflux` library
-in order to record application flow in real-time.
+application flow.
 
 cred
 ====

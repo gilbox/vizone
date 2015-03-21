@@ -30,6 +30,11 @@ install
   also see an orange console message for that library. (If using simflux the message is `simflux-viz loaded`.)
 - Now every time an action occurs in the application, you will see a flow chart generated in real time.
 
+demo
+====
+
+Once you have the plugin installed you can play with a [contrived live demo](http://gilbox.github.io/vizone/demo-gauntlet/).
+
 usage: chrome extension
 =======================
 

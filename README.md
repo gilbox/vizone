@@ -33,7 +33,10 @@ install
 demo
 ====
 
-Once you have the plugin installed you can play with a [contrived live demo](http://gilbox.github.io/vizone/demo-gauntlet/).
+- Once you have the plugin installed you can play with a [contrived live demo](http://gilbox.github.io/vizone/demo-gauntlet/).
+- Or a [real-worldy demo](http://gilbox.github.io/vizone/demo) (console-logged links in this demo don't work properly)
+
+**Note:** The demo will probably error out the first or second time you try loading it with the vizone devtool open. If that happens, just click the browser's reload button. (Sorry it's still pretty experimental)
 
 usage: chrome extension
 =======================

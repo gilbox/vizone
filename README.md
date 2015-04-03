@@ -13,6 +13,11 @@ why?
 
 vizone flow charts can help developers quickly grasp the underpinnings of an application.
 
+how?
+====
+
+`vizone` uses **zone.js** in order to record application flow in real-time. When `vizone` patches any function, it is able to record all resulting function executions, including asynchronous events like `setTimeout` callbacks.
+
 install
 =======
 
@@ -24,6 +29,11 @@ install
 - If the webpage has a library with a corresponding patch loaded into vizone, you should
   also see an orange console message for that library. (If using simflux the message is `simflux-viz loaded`.)
 - Now every time an action occurs in the application, you will see a flow chart generated in real time.
+
+demo
+====
+
+Once you have the plugin installed you can play with a [contrived live demo](http://gilbox.github.io/vizone/demo-gauntlet/).
 
 usage: chrome extension
 =======================
@@ -138,8 +148,7 @@ simflux-viz: how?
 ====
 
 By combining **zone.js** with the predictability of Flux architecture we can easily abstract
-application flow. `simflux-viz` uses **zone.js** and monkey patches the `simflux` library
-in order to record application flow in real-time.
+application flow.
 
 cred
 ====

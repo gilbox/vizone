@@ -4,7 +4,7 @@ var simflux = require('simflux'),
     rootBinding = require('./appContext.jsx').getBinding(),
     tabId = chrome.devtools.inspectedWindow.tabId;
 
-function emitEnabledStatus() {
+function sendEnabledStatusToPanel() {
   var enabled = rootBinding.get('vizoneEnabled');
   port.postMessage({type: 'set-vizone-enabled', enabled:enabled, tabId:tabId});
 }
@@ -28,9 +28,10 @@ var actionCreator = dispatcher.registerActionCreator({
   },
 
   init: function () {
-    dispatcher.dispatch('init');
 
-    emitEnabledStatus();
+    port.postMessage({type: 'init-vizone', tabId:tabId});
+
+    sendEnabledStatusToPanel();
 
     // @todo: does it make sense to have a data stream in an action creator?
     //        (maybe we should think of the stream as a view component)
@@ -44,8 +45,8 @@ var actionCreator = dispatcher.registerActionCreator({
 
         else if (message.type === 'vizone-reset') {
           dispatcher.dispatch('reset');
-          dispatcher.dispatch('init');
-          emitEnabledStatus();
+          if (message.title) dispatcher.dispatch('init', {title:message.title});
+          sendEnabledStatusToPanel();
         }
 
       }

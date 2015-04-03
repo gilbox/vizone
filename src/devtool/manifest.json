@@ -1,7 +1,7 @@
 {
   "name": "vizone devtool",
   "short_name": "vizone",
-  "version": "0.0.0.11",
+  "version": "0.0.0.13",
   "description": "vizone application flow charting",
   "devtools_page": "devtools.html",
   "background": {

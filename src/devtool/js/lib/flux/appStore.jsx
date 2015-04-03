@@ -9,9 +9,13 @@ var simflux = require('simflux'),
 
 var appStore = dispatcher.registerStore({
   storeName: 'App Store',
+  inspectedTitle: '',
 
-  'init': function () {
-    var enabled = (localStorage.getItem('vizoneEnabled') === 'true');
+  getEnabledStorageKey: () => 'vizoneEnabled:'+appStore.inspectedTitle,
+
+  'init': function (o) {
+    this.inspectedTitle = o.title;
+    var enabled = localStorage.getItem(this.getEnabledStorageKey()) === 'true';
     rootBinding.set('vizoneEnabled', enabled);
   },
 
@@ -53,13 +57,18 @@ var appStore = dispatcher.registerStore({
   },
 
   'reset': function () {
+    var vizoneEnabled = rootBinding.get('vizoneEnabled');
     ctx.resetState();
+    rootBinding.set('vizoneEnabled', vizoneEnabled); // @todo: this is janky
   },
 
   'set:vizone:enabled': function (o) {
-    localStorage.setItem('vizoneEnabled', o.enabled.toString());
+    localStorage.setItem(this.getEnabledStorageKey(), o.enabled.toString());
     rootBinding.set('vizoneEnabled', o.enabled);
   }
 });
+
+window.rootBinding = rootBinding;
+window.appStore = appStore;
 
 module.exports = appStore;

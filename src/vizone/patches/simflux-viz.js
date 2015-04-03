@@ -28,14 +28,15 @@ var simfluxViz = function () {
       if (store.hasOwnProperty(a) && typeof store[a] === 'function') {
         (function(a, fn) {
           store[a] = function() {
+            var storeName = store.storeName || '[Store]';
             return vizone(
               Function.apply.bind(fn, this, Array.prototype.slice.call(arguments, 0)),
               {
-                title: store.storeName,
+                title: storeName,
                 subtitle: a,
                 class: 'Node--store',
                 sourceLink: {
-                  label: store.storeName,
+                  label: storeName,
                   url: store.$$$stackInfo.location
                 }
               }
